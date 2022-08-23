@@ -1,0 +1,19 @@
+{
+  "name": "threejs",
+  "version": "1.0.0",
+  "description": "```shell\r npm init\r npm install -g parcel-bundler\r ```",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5"
+  },
+  "dependencies": {
+    "three": "^0.143.0"
+  }
+}
