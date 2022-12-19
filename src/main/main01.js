@@ -32,8 +32,12 @@ document.body.appendChild(renderer.domElement);
 // 10、使用渲染器，通过相机将场景渲染出来
 // renderer.render(scence, camera);
 
-// // 创建轨道控制器
+// 创建轨道控制器
 const controls = new OrbitControls(camera, renderer.domElement)
+
+// 添加坐标轴辅助器
+const axesHelper = new THREE.AxesHelper(5)
+scence.add(axesHelper)
 
 function render() {
   renderer.render(scence, camera)
