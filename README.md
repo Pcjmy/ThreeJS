@@ -4,7 +4,7 @@
 
 ```shell
 npm init -y
-npm install parcel-bundler --save-dev
+npm install --save-dev parcel
 npm install three --save
 ```
 
@@ -20,3 +20,6 @@ npm run dev
 
 https://threejs.org
 
+打包工具
+
+[parcel](https://v2.parceljs.cn/)
