@@ -6,6 +6,7 @@
 npm init -y
 npm install --save-dev parcel
 npm install three --save
+npm install gsap
 ```
 
 运行
