@@ -2,7 +2,7 @@ import * as THREE from 'three';
 // 导入轨道控制器
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-// 目标：设置3D物体缩放
+// 目标：requestAnimationFrame 时间参数 控制物体动画
 
 // 创建场景
 const scence = new THREE.Scene();

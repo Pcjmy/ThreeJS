@@ -44,7 +44,11 @@ const controls = new OrbitControls(camera, renderer.domElement)
 const axesHelper = new THREE.AxesHelper(5)
 scence.add(axesHelper)
 
-function render() {
+let last = 0
+
+function render(time) {
+  console.log(time - last)
+  last = time
   cube.position.y += 0.01
   if (cube.position.y>5) {
     cube.position.y = 0
