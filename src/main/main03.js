@@ -26,11 +26,11 @@ const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 // cube.position.x = 3
 
 // 缩放
-cube.scale.set(3, 2, 1)
-cube.scale.x = 5
+// cube.scale.set(3, 2, 1)
+// cube.scale.x = 5
 
 // 旋转
-cube.rotation.set(Math.PI/4, 0, 0)
+// cube.rotation.set(Math.PI/4, 0, 0)
 
 // 将几何体添加到场景中
 scence.add(cube)
@@ -51,11 +51,16 @@ const controls = new OrbitControls(camera, renderer.domElement)
 const axesHelper = new THREE.AxesHelper(5)
 scence.add(axesHelper)
 
-function render() {
-  cube.position.y += 0.01
-  cube.rotation.y += 0.01
-  if (cube.position.y > 5) {
-    cube.position.y = 0
+function render(time) {
+  // cube.position.y += 0.01
+  // cube.rotation.y += 0.01
+  // if (cube.position.y > 5) {
+  //   cube.position.y = 0
+  // }
+  let t = time / 1000 % 5
+  cube.position.x = t * 1
+  if (cube.position.x > 5) {
+    cube.position.x = 0
   }
   renderer.render(scence, camera)
   // 渲染下一帧的时候就会调用render函数
