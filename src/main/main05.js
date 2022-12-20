@@ -57,8 +57,33 @@ scence.add(axesHelper)
 const clock = new THREE.Clock()
 
 // 设置动画
-gsap.to(cube.position, { x: 5, duration: 5, ease: 'power1.inOut' })
+let animate = gsap.to(cube.position, {
+  x: 5,
+  duration: 5,
+  ease: 'power1.inOut',
+  // 设置重复次数，无限次循环-1
+  repeat: -1,
+  // 往返运动
+  yoyo: true,
+  // 延迟时间
+  delay: 2,
+  onComplete: () => {
+    console.log('动画完成')
+  },
+  onStart: () => {
+    console.log('动画开始')
+  }
+})
 gsap.to(cube.rotation, { x: 2 * Math.PI, duration: 5, ease: 'power1.inOut'})
+
+window.addEventListener('dblclick', () => {
+  // console.log(animate)
+  if (animate.isActive()) {
+    animate.pause()
+  } else {
+    animate.resume()
+  }
+})
 
 function render() {
   renderer.render(scence, camera)
