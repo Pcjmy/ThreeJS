@@ -24,3 +24,7 @@ https://threejs.org
 打包工具
 
 [parcel](https://v2.parceljs.cn/)
+
+GSAP动画库
+
+[GSAP](https://greensock.com/)
