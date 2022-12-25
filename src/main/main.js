@@ -15,31 +15,23 @@ camera.position.set(0,0,10);
 scence.add(camera);
 
 // 创建几何体
-const geometry = new THREE.BufferGeometry()
-const vertices = new Float32Array([
-  -1.0, -1.0, 1.0,
-  1.0, -1.0, 1.0,
-  1.0, 1.0, 1.0,
-  1.0, 1.0, 1.0,
-  -1.0, 1.0, 1.0,
-  -1.0, -1.0, 1.0
-])
-
-geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
-
-const Material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
-// 根据几何体和材质创建物体
-const mesh = new THREE.Mesh(geometry, Material)
-
-// 将几何体添加到场景中
-scence.add(mesh)
-
-const params = {
-  color: '#ffff00',
-  fn: () => {
-    // 让立方体运动起来
-    gsap.to(cube.position, { x: 5, duration: 2, yoyo: true, repeat: -1 })
+for (let i=0; i<50; i++) {
+  // 每一个三角形，需要三个顶点，每个顶点需要三个值
+  const geometry = new THREE.BufferGeometry()
+  const positionArray = new Float32Array(9)
+  for (let j=0; j<9; j++) {
+    positionArray[j] = Math.random() * 10 - 5
   }
+  geometry.setAttribute(
+    'position',
+    new THREE.BufferAttribute(positionArray, 3)
+  )
+  let color = new THREE.Color(Math.random(), Math.random(), Math.random())
+  const Material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.5 })
+  // 根据几何体和材质创建物体
+  const mesh = new THREE.Mesh(geometry, Material)
+  // 将几何体添加到场景中
+  scence.add(mesh)
 }
 
 // 初始化渲染器
