@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 // 导入动画库
 import gsap from 'gsap'
+import { Scene } from 'three';
 
 // 创建场景
 const scence = new THREE.Scene();
@@ -14,25 +15,21 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHei
 camera.position.set(0,0,10);
 scence.add(camera);
 
-// 创建几何体
-for (let i=0; i<50; i++) {
-  // 每一个三角形，需要三个顶点，每个顶点需要三个值
-  const geometry = new THREE.BufferGeometry()
-  const positionArray = new Float32Array(9)
-  for (let j=0; j<9; j++) {
-    positionArray[j] = Math.random() * 10 - 5
-  }
-  geometry.setAttribute(
-    'position',
-    new THREE.BufferAttribute(positionArray, 3)
-  )
-  let color = new THREE.Color(Math.random(), Math.random(), Math.random())
-  const Material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.5 })
-  // 根据几何体和材质创建物体
-  const mesh = new THREE.Mesh(geometry, Material)
-  // 将几何体添加到场景中
-  scence.add(mesh)
-}
+// 导入纹理
+const textureLoader = new THREE.TextureLoader()
+const doorColorTexture = textureLoader.load('door.png')
+
+// 添加物体
+const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
+// 材质
+const basicMaterial = new THREE.MeshBasicMaterial({
+  color: '#ffff00',
+  map: doorColorTexture
+})
+
+const cube = new THREE.Mesh(cubeGeometry, basicMaterial)
+
+scence.add(cube)
 
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer()
