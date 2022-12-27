@@ -549,25 +549,31 @@ scence.add(camera);
 // 导入纹理
 const textureLoader = new _three.TextureLoader();
 const doorColorTexture = textureLoader.load("door.png");
-// 设置纹理偏移
-doorColorTexture.offset.x = 0.5;
-doorColorTexture.offset.y = 0.5;
-// 纹理旋转
-// 设置旋转的原点
-doorColorTexture.center.set(0.5, 0.5);
-// 旋转45deg
-doorColorTexture.rotation = Math.PI / 4;
-// 设置纹理的重复
-doorColorTexture.repeat.set(2, 3);
-// 设置纹理重复的模式
-doorColorTexture.wrapS = _three.MirroredRepeatWrapping;
-doorColorTexture.wrapT = _three.RepeatWrapping;
+const texture = textureLoader.load("minecraft.png");
+// // 设置纹理偏移
+// doorColorTexture.offset.x = 0.5
+// doorColorTexture.offset.y = 0.5
+// // 纹理旋转
+// // 设置旋转的原点
+// doorColorTexture.center.set(0.5, 0.5)
+// // 旋转45deg
+// doorColorTexture.rotation = Math.PI / 4
+// // 设置纹理的重复
+// doorColorTexture.repeat.set(2, 3)
+// // 设置纹理重复的模式
+// doorColorTexture.wrapS = THREE.MirroredRepeatWrapping
+// doorColorTexture.wrapT = THREE.RepeatWrapping
+// texture纹理显示设置
+// texture.minFilter = THREE.NearestFilter
+// texture.magFilter = THREE.NearestFilter
+texture.minFilter = _three.LinearFilter;
+texture.magFilter = _three.LinearFilter;
 // 添加物体
 const cubeGeometry = new _three.BoxGeometry(1, 1, 1);
 // 材质
 const basicMaterial = new _three.MeshBasicMaterial({
     color: "#ffff00",
-    map: doorColorTexture
+    map: texture
 });
 const cube = new _three.Mesh(cubeGeometry, basicMaterial);
 scence.add(cube);
