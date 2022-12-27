@@ -549,6 +549,19 @@ scence.add(camera);
 // 导入纹理
 const textureLoader = new _three.TextureLoader();
 const doorColorTexture = textureLoader.load("door.png");
+// 设置纹理偏移
+doorColorTexture.offset.x = 0.5;
+doorColorTexture.offset.y = 0.5;
+// 纹理旋转
+// 设置旋转的原点
+doorColorTexture.center.set(0.5, 0.5);
+// 旋转45deg
+doorColorTexture.rotation = Math.PI / 4;
+// 设置纹理的重复
+doorColorTexture.repeat.set(2, 3);
+// 设置纹理重复的模式
+doorColorTexture.wrapS = _three.MirroredRepeatWrapping;
+doorColorTexture.wrapT = _three.RepeatWrapping;
 // 添加物体
 const cubeGeometry = new _three.BoxGeometry(1, 1, 1);
 // 材质
