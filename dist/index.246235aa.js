@@ -546,8 +546,8 @@ var _rgbeloader = require("three/examples/jsm/loaders/RGBELoader");
 const rgbeLoader = new (0, _rgbeloader.RGBELoader)();
 rgbeLoader.loadAsync("./hdr/002.hdr").then((texture)=>{
     texture.mapping = _three.EquirectangularReflectionMapping;
-    scene.background = texture;
-    scene.environment = texture;
+    scence.background = texture;
+    scence.environment = texture;
 });
 // 创建场景
 const scence = new _three.Scene();

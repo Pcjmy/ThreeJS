@@ -11,8 +11,8 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 const rgbeLoader = new RGBELoader();
 rgbeLoader.loadAsync("./hdr/002.hdr").then((texture) => {
   texture.mapping = THREE.EquirectangularReflectionMapping;
-  scene.background = texture;
-  scene.environment = texture;
+  scence.background = texture;
+  scence.environment = texture;
 });
 
 // 创建场景
