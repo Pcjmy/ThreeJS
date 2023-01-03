@@ -542,12 +542,6 @@ var _gsapDefault = parcelHelpers.interopDefault(_gsap);
 // 导入dat.gui
 var _datGui = require("dat.gui");
 var _rgbeloader = require("three/examples/jsm/loaders/RGBELoader");
-// 灯光阴影
-// 1、材质要满足能够对光照有反应
-// 2、设置渲染器开启阴影的计算 renderer.shadowMap.enabled = true;
-// 3、设置光照投射阴影 directionalLight.castShadow = true;
-// 4、设置物体投射阴影 sphere.castShadow = true;
-// 5、设置物体接收阴影 plane.receiveShadow = true;
 // 创建场景
 const scence = new _three.Scene();
 // 创建相机
@@ -555,40 +549,46 @@ const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.inner
 // 设置相机位置
 camera.position.set(0, 0, 10);
 scence.add(camera);
-const sphereGeometry = new _three.SphereBufferGeometry(1, 20, 20);
-const material = new _three.MeshStandardMaterial();
-const sphere = new _three.Mesh(sphereGeometry, material);
-// 投射阴影
-sphere.castShadow = true;
-scence.add(sphere);
-// // 创建平面
-const planeGeometry = new _three.PlaneBufferGeometry(10, 10);
-const plane = new _three.Mesh(planeGeometry, material);
-plane.position.set(0, -1, 0);
-plane.rotation.x = -Math.PI / 2;
-// 接收阴影
-plane.receiveShadow = true;
-scence.add(plane);
-// 灯光
-// 环境光
-const light = new _three.AmbientLight(0xffffff, 0.5); // soft white light
-scence.add(light);
-//直线光源
-const directionalLight = new _three.DirectionalLight(0xffffff, 0.5);
-directionalLight.position.set(10, 10, 10);
-directionalLight.castShadow = true;
-scence.add(directionalLight);
+// 创建球几何体
+const sphereGeometry = new _three.SphereBufferGeometry(3, 30, 30);
+// const material = new THREE.MeshBasicMaterial({
+//   color: 0xff0000,
+//   wireframe: true,
+// });
+// const mesh = new THREE.Mesh(sphereGeometry, material);
+// scence.add(mesh);
+// 设置点材质
+const pointsMaterial = new _three.PointsMaterial();
+pointsMaterial.size = 0.1;
+pointsMaterial.color.set(0xfff000);
+// 相机深度而衰减
+pointsMaterial.sizeAttenuation = true;
+// 载入纹理
+const textureLoader = new _three.TextureLoader();
+const texture = textureLoader.load("./particles/1.png");
+// 设置点材质纹理
+pointsMaterial.map = texture;
+pointsMaterial.alphaMap = texture;
+pointsMaterial.transparent = true;
+pointsMaterial.depthWrite = false;
+pointsMaterial.blending = _three.AdditiveBlending;
+const points = new _three.Points(sphereGeometry, pointsMaterial);
+scence.add(points);
 // 初始化渲染器
 const renderer = new _three.WebGLRenderer();
 // 设置渲染的尺寸大小
 renderer.setSize(window.innerWidth, window.innerHeight);
-// 将webgl渲染的canvas添加到body
+// 开启场景中的阴影贴图
+renderer.shadowMap.enabled = true;
+renderer.physicallyCorrectLights = true;
+// console.log(renderer);
+// 将webgl渲染的canvas内容添加到body
 document.body.appendChild(renderer.domElement);
-// 使用渲染器，通过相机将场景渲染出来
-// renderer.render(scence, camera);
+// // 使用渲染器，通过相机将场景渲染进来
+// renderer.render(scene, camera);
 // 创建轨道控制器
 const controls = new (0, _orbitControls.OrbitControls)(camera, renderer.domElement);
-// 设置控制器阻尼，让控制器更有真实效果，必须在动画循环里调用update()
+// 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
 controls.enableDamping = true;
 // 添加坐标轴辅助器
 const axesHelper = new _three.AxesHelper(5);
