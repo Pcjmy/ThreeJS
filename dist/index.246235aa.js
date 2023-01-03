@@ -542,13 +542,12 @@ var _gsapDefault = parcelHelpers.interopDefault(_gsap);
 // 导入dat.gui
 var _datGui = require("dat.gui");
 var _rgbeloader = require("three/examples/jsm/loaders/RGBELoader");
-// 加载hdr环境图
-const rgbeLoader = new (0, _rgbeloader.RGBELoader)();
-rgbeLoader.loadAsync("./hdr/002.hdr").then((texture)=>{
-    texture.mapping = _three.EquirectangularReflectionMapping;
-    scence.background = texture;
-    scence.environment = texture;
-});
+// 灯光阴影
+// 1、材质要满足能够对光照有反应
+// 2、设置渲染器开启阴影的计算 renderer.shadowMap.enabled = true;
+// 3、设置光照投射阴影 directionalLight.castShadow = true;
+// 4、设置物体投射阴影 sphere.castShadow = true;
+// 5、设置物体接收阴影 plane.receiveShadow = true;
 // 创建场景
 const scence = new _three.Scene();
 // 创建相机
@@ -556,27 +555,20 @@ const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.inner
 // 设置相机位置
 camera.position.set(0, 0, 10);
 scence.add(camera);
-// 设置cube纹理加载器
-const cubeTextureLoader = new _three.CubeTextureLoader();
-const envMapTexture = cubeTextureLoader.load([
-    "./environmentMaps/1/px.jpg",
-    "./environmentMaps/1/nx.jpg",
-    "./environmentMaps/1/py.jpg",
-    "./environmentMaps/1/ny.jpg",
-    "./environmentMaps/1/pz.jpg",
-    "./environmentMaps/1/nz.jpg"
-]);
 const sphereGeometry = new _three.SphereBufferGeometry(1, 20, 20);
-const material = new _three.MeshStandardMaterial({
-    metalness: 0.7,
-    roughness: 0.1
-});
+const material = new _three.MeshStandardMaterial();
 const sphere = new _three.Mesh(sphereGeometry, material);
+// 投射阴影
+sphere.castShadow = true;
 scence.add(sphere);
-// 给场景添加背景
-scence.background = envMapTexture;
-// 给场景所有的物体添加默认的环境贴图
-scence.environment = envMapTexture;
+// // 创建平面
+const planeGeometry = new _three.PlaneBufferGeometry(10, 10);
+const plane = new _three.Mesh(planeGeometry, material);
+plane.position.set(0, -1, 0);
+plane.rotation.x = -Math.PI / 2;
+// 接收阴影
+plane.receiveShadow = true;
+scence.add(plane);
 // 灯光
 // 环境光
 const light = new _three.AmbientLight(0xffffff, 0.5); // soft white light
@@ -584,6 +576,7 @@ scence.add(light);
 //直线光源
 const directionalLight = new _three.DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(10, 10, 10);
+directionalLight.castShadow = true;
 scence.add(directionalLight);
 // 初始化渲染器
 const renderer = new _three.WebGLRenderer();
@@ -629,7 +622,7 @@ window.addEventListener("resize", ()=>{
     renderer.setPixelRatio(window.devicePixelRatio);
 });
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls":"7mqRv","gsap":"fPSuC","dat.gui":"k3xQk","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","three/examples/jsm/loaders/RGBELoader":"cfP3d"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls":"7mqRv","gsap":"fPSuC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","dat.gui":"k3xQk","three/examples/jsm/loaders/RGBELoader":"cfP3d"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2022 Three.js Authors

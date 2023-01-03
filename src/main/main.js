@@ -7,13 +7,12 @@ import gsap from 'gsap'
 import * as dat from 'dat.gui'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 
-// 加载hdr环境图
-const rgbeLoader = new RGBELoader();
-rgbeLoader.loadAsync("./hdr/002.hdr").then((texture) => {
-  texture.mapping = THREE.EquirectangularReflectionMapping;
-  scence.background = texture;
-  scence.environment = texture;
-});
+// 灯光阴影
+// 1、材质要满足能够对光照有反应
+// 2、设置渲染器开启阴影的计算 renderer.shadowMap.enabled = true;
+// 3、设置光照投射阴影 directionalLight.castShadow = true;
+// 4、设置物体投射阴影 sphere.castShadow = true;
+// 5、设置物体接收阴影 plane.receiveShadow = true;
 
 // 创建场景
 const scence = new THREE.Scene()
@@ -25,30 +24,21 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHei
 camera.position.set(0,0,10)
 scence.add(camera)
 
-// 设置cube纹理加载器
-const cubeTextureLoader = new THREE.CubeTextureLoader();
-const envMapTexture = cubeTextureLoader.load([
-  "./environmentMaps/1/px.jpg",
-  "./environmentMaps/1/nx.jpg",
-  "./environmentMaps/1/py.jpg",
-  "./environmentMaps/1/ny.jpg",
-  "./environmentMaps/1/pz.jpg",
-  "./environmentMaps/1/nz.jpg",
-]);
-
 const sphereGeometry = new THREE.SphereBufferGeometry(1, 20, 20);
-const material = new THREE.MeshStandardMaterial({
-  metalness: 0.7,
-  roughness: 0.1,
-  //   envMap: envMapTexture,
-});
+const material = new THREE.MeshStandardMaterial();
 const sphere = new THREE.Mesh(sphereGeometry, material);
+// 投射阴影
+sphere.castShadow = true;
 scence.add(sphere);
 
-// 给场景添加背景
-scence.background = envMapTexture;
-// 给场景所有的物体添加默认的环境贴图
-scence.environment = envMapTexture;
+// // 创建平面
+const planeGeometry = new THREE.PlaneBufferGeometry(10, 10);
+const plane = new THREE.Mesh(planeGeometry, material);
+plane.position.set(0, -1, 0);
+plane.rotation.x = -Math.PI / 2;
+// 接收阴影
+plane.receiveShadow = true;
+scence.add(plane);
 
 // 灯光
 // 环境光
@@ -57,6 +47,7 @@ scence.add(light);
 //直线光源
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(10, 10, 10);
+directionalLight.castShadow = true;
 scence.add(directionalLight);
 
 // 初始化渲染器
