@@ -1,5 +1,13 @@
 ## README
 
+![](assets/1.png)
+
+![](assets/2.png)
+
+![](assets/3.png)
+
+![](assets/4.png)
+
 ### 项目搭建
 
 ```shell
@@ -29,5 +37,3 @@ https://threejs.org
 GSAP动画库
 
 [GSAP](https://greensock.com/)
-
-![](assets/1.png)

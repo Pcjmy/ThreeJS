@@ -5,7 +5,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
 // 导入dat.gui
 import * as dat from 'dat.gui'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+
+const gui = new dat.GUI()
 
 // 创建场景
 const scence = new THREE.Scene()
@@ -17,18 +18,27 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHei
 camera.position.set(0,0,10)
 scence.add(camera)
 
-// 创建球几何体
-const sphereGeometry = new THREE.SphereBufferGeometry(3, 30, 30);
-// const material = new THREE.MeshBasicMaterial({
-//   color: 0xff0000,
-//   wireframe: true,
-// });
-// const mesh = new THREE.Mesh(sphereGeometry, material);
-// scence.add(mesh);
+const particlesGeometry = new THREE.BufferGeometry()
+const count = 5000
+
+// 设置缓冲区数组
+const positions = new Float32Array(count * 3)
+// 设置粒子顶点颜色
+const colors = new Float32Array(count * 3)
+// 设置顶点
+for (let i=0;i<count*3;i++) {
+  positions[i] = (Math.random() - 0.5) * 100
+  colors[i] = Math.random()
+}
+particlesGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(positions, 3)
+)
+particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3))
 
 // 设置点材质
 const pointsMaterial = new THREE.PointsMaterial();
-pointsMaterial.size = 0.1;
+pointsMaterial.size = 0.5;
 pointsMaterial.color.set(0xfff000);
 // 相机深度而衰减
 pointsMaterial.sizeAttenuation = true;
@@ -43,7 +53,7 @@ pointsMaterial.transparent = true;
 pointsMaterial.depthWrite = false;
 pointsMaterial.blending = THREE.AdditiveBlending;
 
-const points = new THREE.Points(sphereGeometry, pointsMaterial);
+const points = new THREE.Points(particlesGeometry, pointsMaterial);
 
 scence.add(points);
 
