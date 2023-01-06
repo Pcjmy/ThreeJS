@@ -545,40 +545,48 @@ const gui = new _datGui.GUI();
 // 创建场景
 const scence = new _three.Scene();
 // 创建相机
-const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 30);
 // 设置相机位置
-camera.position.set(0, 0, 10);
+camera.position.set(0, 0, 40);
 scence.add(camera);
-const particlesGeometry = new _three.BufferGeometry();
-const count = 5000;
-// 设置缓冲区数组
-const positions = new Float32Array(count * 3);
-// 设置粒子顶点颜色
-const colors = new Float32Array(count * 3);
-// 设置顶点
-for(let i = 0; i < count * 3; i++){
-    positions[i] = (Math.random() - 0.5) * 100;
-    colors[i] = Math.random();
+function createPoints(url, size = 0.5) {
+    const particlesGeometry = new _three.BufferGeometry();
+    const count = 10000;
+    // 设置缓冲区数组
+    const positions = new Float32Array(count * 3);
+    // 设置粒子顶点颜色
+    const colors = new Float32Array(count * 3);
+    // 设置顶点
+    for(let i = 0; i < count * 3; i++){
+        positions[i] = (Math.random() - 0.5) * 100;
+        colors[i] = Math.random();
+    }
+    particlesGeometry.setAttribute("position", new _three.BufferAttribute(positions, 3));
+    particlesGeometry.setAttribute("color", new _three.BufferAttribute(colors, 3));
+    // 设置点材质
+    const pointsMaterial = new _three.PointsMaterial();
+    pointsMaterial.size = 0.5;
+    pointsMaterial.color.set(0xfff000);
+    // 相机深度而衰减
+    pointsMaterial.sizeAttenuation = true;
+    // 载入纹理
+    const textureLoader = new _three.TextureLoader();
+    const texture = textureLoader.load(`./particles/${url}.png`);
+    // 设置点材质纹理
+    pointsMaterial.map = texture;
+    pointsMaterial.alphaMap = texture;
+    pointsMaterial.transparent = true;
+    pointsMaterial.depthWrite = false;
+    pointsMaterial.blending = _three.AdditiveBlending;
+    // 设置启动顶点颜色
+    pointsMaterial.vertexColors = true;
+    const points = new _three.Points(particlesGeometry, pointsMaterial);
+    scence.add(points);
+    return points;
 }
-particlesGeometry.setAttribute("position", new _three.BufferAttribute(positions, 3));
-particlesGeometry.setAttribute("color", new _three.BufferAttribute(colors, 3));
-// 设置点材质
-const pointsMaterial = new _three.PointsMaterial();
-pointsMaterial.size = 0.5;
-pointsMaterial.color.set(0xfff000);
-// 相机深度而衰减
-pointsMaterial.sizeAttenuation = true;
-// 载入纹理
-const textureLoader = new _three.TextureLoader();
-const texture = textureLoader.load("./particles/1.png");
-// 设置点材质纹理
-pointsMaterial.map = texture;
-pointsMaterial.alphaMap = texture;
-pointsMaterial.transparent = true;
-pointsMaterial.depthWrite = false;
-pointsMaterial.blending = _three.AdditiveBlending;
-const points = new _three.Points(particlesGeometry, pointsMaterial);
-scence.add(points);
+const points = createPoints("1", 1.5);
+const points2 = createPoints("xh", 1);
+const points3 = createPoints("xh", 2);
 // 初始化渲染器
 const renderer = new _three.WebGLRenderer();
 // 设置渲染的尺寸大小
@@ -590,7 +598,7 @@ renderer.physicallyCorrectLights = true;
 // 将webgl渲染的canvas内容添加到body
 document.body.appendChild(renderer.domElement);
 // // 使用渲染器，通过相机将场景渲染进来
-// renderer.render(scene, camera);
+// renderer.render(scence, camera);
 // 创建轨道控制器
 const controls = new (0, _orbitControls.OrbitControls)(camera, renderer.domElement);
 // 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
@@ -609,9 +617,15 @@ window.addEventListener("dblclick", ()=>{
     document.exitFullscreen();
 });
 function render() {
+    let time = clock.getElapsedTime();
+    points.rotation.x = time * 0.3;
+    points2.rotation.x = time * 0.5;
+    points2.rotation.y = time * 0.4;
+    points3.rotation.x = time * 0.2;
+    points3.rotation.y = time * 0.2;
     controls.update();
     renderer.render(scence, camera);
-    // 渲染下一帧的时候就会调用render函数
+    //   渲染下一帧的时候就会调用render函数
     requestAnimationFrame(render);
 }
 render();
