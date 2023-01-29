@@ -9,7 +9,7 @@ import * as dat from 'dat.gui'
 const gui = new dat.GUI()
 
 // 创建场景
-const scence = new THREE.Scene()
+const scene = new THREE.Scene()
 
 // 创建相机
 const camera = new THREE.PerspectiveCamera(
@@ -19,57 +19,91 @@ const camera = new THREE.PerspectiveCamera(
   30
 )
 
+const textureLoader = new THREE.TextureLoader()
+const particlesTexture = textureLoader.load('./particles/1.png')
 // 设置相机位置
-camera.position.set(0, 0, 40)
-scence.add(camera)
+camera.position.set(0, 0, 10)
+scene.add(camera)
 
-function createPoints(url, size = 0.5) {
-  const particlesGeometry = new THREE.BufferGeometry();
-  const count = 10000;
-
-  // 设置缓冲区数组
-  const positions = new Float32Array(count * 3);
-  // 设置粒子顶点颜色
-  const colors = new Float32Array(count * 3);
-  // 设置顶点
-  for (let i = 0; i < count * 3; i++) {
-    positions[i] = (Math.random() - 0.5) * 100;
-    colors[i] = Math.random();
-  }
-  particlesGeometry.setAttribute(
-    "position",
-    new THREE.BufferAttribute(positions, 3)
-  );
-  particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-  // 设置点材质
-  const pointsMaterial = new THREE.PointsMaterial();
-  pointsMaterial.size = 0.5;
-  pointsMaterial.color.set(0xfff000);
-  // 相机深度而衰减
-  pointsMaterial.sizeAttenuation = true;
-
-  // 载入纹理
-  const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load(`./particles/${url}.png`);
-  // 设置点材质纹理
-  pointsMaterial.map = texture;
-  pointsMaterial.alphaMap = texture;
-  pointsMaterial.transparent = true;
-  pointsMaterial.depthWrite = false;
-  pointsMaterial.blending = THREE.AdditiveBlending;
-  // 设置启动顶点颜色
-  pointsMaterial.vertexColors = true;
-
-  const points = new THREE.Points(particlesGeometry, pointsMaterial);
-
-  scence.add(points);
-  return points;
+const params = {
+  count: 10000,
+  size: 0.1,
+  radius: 5,
+  branch: 3,
+  color: '#ff6030',
+  rotateScale: 0.3,
+  endColor: '#1b3984'
 }
 
-const points = createPoints("1", 1.5);
-const points2 = createPoints("xh", 1);
-const points3 = createPoints("xh", 2);
+let geometry = null;
+let material = null;
+let points = null;
+const centerColor = new THREE.Color(params.color);
+const endColor = new THREE.Color(params.endColor);
+const generateGalaxy = () => {
+  // 生成顶点
+  geometry = new THREE.BufferGeometry();
+  //   随机生成位置和
+  const positions = new Float32Array(params.count * 3);
+  // 设置顶点颜色
+  const colors = new Float32Array(params.count * 3);
+
+  //   循环生成点
+  for (let i = 0; i < params.count; i++) {
+    //   当前的点应该在哪一条分支的角度上
+    const branchAngel = (i % params.branch) * ((2 * Math.PI) / params.branch);
+
+    // 当前点距离圆心的距离
+    const distance = Math.random() * params.radius * Math.pow(Math.random(), 3);
+    const current = i * 3;
+
+    const randomX =
+      (Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance)) / 5;
+    const randomY =
+      (Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance)) / 5;
+    const randomZ =
+      (Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance)) / 5;
+
+    // const randomX = (Math.pow(Math.random() * 2 - 1, 3) * distance) / 5;
+    // const randomY = (Math.pow(Math.random() * 2 - 1, 3) * distance) / 5;
+    // const randomZ = (Math.pow(Math.random() * 2 - 1, 3) * distance) / 5;
+
+    positions[current] =
+      Math.cos(branchAngel + distance * params.rotateScale) * distance +
+      randomX;
+    positions[current + 1] = 0 + randomY;
+    positions[current + 2] =
+      Math.sin(branchAngel + distance * params.rotateScale) * distance +
+      randomZ;
+
+    // 混合颜色，形成渐变色
+    const mixColor = centerColor.clone();
+    mixColor.lerp(endColor, distance / params.radius);
+
+    colors[current] = mixColor.r;
+    colors[current + 1] = mixColor.g;
+    colors[current + 2] = mixColor.b;
+  }
+
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+  //   设置点材质
+  material = new THREE.PointsMaterial({
+    size: params.size,
+    sizeAttenuation: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    map: particlesTexture,
+    alphaMap: particlesTexture,
+    transparent: true,
+    vertexColors: true,
+  });
+
+  points = new THREE.Points(geometry, material);
+  scene.add(points);
+};
+generateGalaxy();
 
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer();
@@ -84,7 +118,7 @@ renderer.physicallyCorrectLights = true;
 document.body.appendChild(renderer.domElement);
 
 // // 使用渲染器，通过相机将场景渲染进来
-// renderer.render(scence, camera);
+// renderer.render(scene, camera);
 
 // 创建轨道控制器
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -93,7 +127,7 @@ controls.enableDamping = true;
 
 // 添加坐标轴辅助器
 const axesHelper = new THREE.AxesHelper(5);
-scence.add(axesHelper);
+scene.add(axesHelper);
 // 设置时钟
 const clock = new THREE.Clock();
 
@@ -110,16 +144,11 @@ window.addEventListener('dblclick', () => {
 })
 
 function render() {
-  let time = clock.getElapsedTime();
-  points.rotation.x = time * 0.3;
-  points2.rotation.x = time * 0.5;
-  points2.rotation.y = time * 0.4;
-  points3.rotation.x = time * 0.2;
-  points3.rotation.y = time * 0.2;
-  controls.update();
-  renderer.render(scence, camera);
+  let time = clock.getElapsedTime()
+  controls.update()
+  renderer.render(scene, camera)
   //   渲染下一帧的时候就会调用render函数
-  requestAnimationFrame(render);
+  requestAnimationFrame(render)
 }
 
 render()
