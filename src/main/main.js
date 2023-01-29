@@ -26,7 +26,7 @@ camera.position.set(0, 0, 10)
 scene.add(camera)
 
 const params = {
-  count: 10000,
+  count: 30000,
   size: 0.1,
   radius: 5,
   branch: 3,
@@ -43,14 +43,14 @@ const endColor = new THREE.Color(params.endColor);
 const generateGalaxy = () => {
   // 生成顶点
   geometry = new THREE.BufferGeometry();
-  //   随机生成位置和
+  // 随机生成位置和
   const positions = new Float32Array(params.count * 3);
   // 设置顶点颜色
   const colors = new Float32Array(params.count * 3);
 
-  //   循环生成点
+  // 循环生成点
   for (let i = 0; i < params.count; i++) {
-    //   当前的点应该在哪一条分支的角度上
+    // 当前的点应该在哪一条分支的角度上
     const branchAngel = (i % params.branch) * ((2 * Math.PI) / params.branch);
 
     // 当前点距离圆心的距离
@@ -69,12 +69,10 @@ const generateGalaxy = () => {
     // const randomZ = (Math.pow(Math.random() * 2 - 1, 3) * distance) / 5;
 
     positions[current] =
-      Math.cos(branchAngel + distance * params.rotateScale) * distance +
-      randomX;
+      Math.cos(branchAngel + distance * params.rotateScale) * distance + randomX;
     positions[current + 1] = 0 + randomY;
     positions[current + 2] =
-      Math.sin(branchAngel + distance * params.rotateScale) * distance +
-      randomZ;
+      Math.sin(branchAngel + distance * params.rotateScale) * distance + randomZ;
 
     // 混合颜色，形成渐变色
     const mixColor = centerColor.clone();
@@ -126,8 +124,8 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
 // 添加坐标轴辅助器
-const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
 // 设置时钟
 const clock = new THREE.Clock();
 

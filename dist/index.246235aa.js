@@ -552,7 +552,7 @@ const particlesTexture = textureLoader.load("./particles/1.png");
 camera.position.set(0, 0, 10);
 scene.add(camera);
 const params = {
-    count: 10000,
+    count: 30000,
     size: 0.1,
     radius: 5,
     branch: 3,
@@ -568,13 +568,13 @@ const endColor = new _three.Color(params.endColor);
 const generateGalaxy = ()=>{
     // 生成顶点
     geometry = new _three.BufferGeometry();
-    //   随机生成位置和
+    // 随机生成位置和
     const positions = new Float32Array(params.count * 3);
     // 设置顶点颜色
     const colors = new Float32Array(params.count * 3);
-    //   循环生成点
+    // 循环生成点
     for(let i = 0; i < params.count; i++){
-        //   当前的点应该在哪一条分支的角度上
+        // 当前的点应该在哪一条分支的角度上
         const branchAngel = i % params.branch * (2 * Math.PI / params.branch);
         // 当前点距离圆心的距离
         const distance = Math.random() * params.radius * Math.pow(Math.random(), 3);
@@ -629,8 +629,8 @@ const controls = new (0, _orbitControls.OrbitControls)(camera, renderer.domEleme
 // 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
 controls.enableDamping = true;
 // 添加坐标轴辅助器
-const axesHelper = new _three.AxesHelper(5);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
 // 设置时钟
 const clock = new _three.Clock();
 window.addEventListener("dblclick", ()=>{
