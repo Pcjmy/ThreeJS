@@ -549,69 +549,55 @@ const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.inner
 const textureLoader = new _three.TextureLoader();
 const particlesTexture = textureLoader.load("./particles/1.png");
 // 设置相机位置
-camera.position.set(0, 0, 10);
+camera.position.set(0, 0, 20);
 scene.add(camera);
-const params = {
-    count: 30000,
-    size: 0.1,
-    radius: 5,
-    branch: 3,
-    color: "#ff6030",
-    rotateScale: 0.3,
-    endColor: "#1b3984"
-};
-let geometry = null;
-let material = null;
-let points = null;
-const centerColor = new _three.Color(params.color);
-const endColor = new _three.Color(params.endColor);
-const generateGalaxy = ()=>{
-    // 生成顶点
-    geometry = new _three.BufferGeometry();
-    // 随机生成位置和
-    const positions = new Float32Array(params.count * 3);
-    // 设置顶点颜色
-    const colors = new Float32Array(params.count * 3);
-    // 循环生成点
-    for(let i = 0; i < params.count; i++){
-        // 当前的点应该在哪一条分支的角度上
-        const branchAngel = i % params.branch * (2 * Math.PI / params.branch);
-        // 当前点距离圆心的距离
-        const distance = Math.random() * params.radius * Math.pow(Math.random(), 3);
-        const current = i * 3;
-        const randomX = Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance) / 5;
-        const randomY = Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance) / 5;
-        const randomZ = Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance) / 5;
-        // const randomX = (Math.pow(Math.random() * 2 - 1, 3) * distance) / 5;
-        // const randomY = (Math.pow(Math.random() * 2 - 1, 3) * distance) / 5;
-        // const randomZ = (Math.pow(Math.random() * 2 - 1, 3) * distance) / 5;
-        positions[current] = Math.cos(branchAngel + distance * params.rotateScale) * distance + randomX;
-        positions[current + 1] = 0 + randomY;
-        positions[current + 2] = Math.sin(branchAngel + distance * params.rotateScale) * distance + randomZ;
-        // 混合颜色，形成渐变色
-        const mixColor = centerColor.clone();
-        mixColor.lerp(endColor, distance / params.radius);
-        colors[current] = mixColor.r;
-        colors[current + 1] = mixColor.g;
-        colors[current + 2] = mixColor.b;
+const cubeGeometry = new _three.BoxBufferGeometry(1, 1, 1);
+const material = new _three.MeshBasicMaterial({
+    wireframe: true
+});
+const redMaterial = new _three.MeshBasicMaterial({
+    color: "#ff0000"
+});
+// 1000立方体
+let cubeArr = [];
+for(let i = -5; i < 5; i++){
+    for(let j = -5; j < 5; j++)for(let z = -5; z < 5; z++){
+        const cube = new _three.Mesh(cubeGeometry, material);
+        cube.position.set(i, j, z);
+        scene.add(cube);
+        cubeArr.push(cube);
     }
-    geometry.setAttribute("position", new _three.BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new _three.BufferAttribute(colors, 3));
-    //   设置点材质
-    material = new _three.PointsMaterial({
-        size: params.size,
-        sizeAttenuation: true,
-        depthWrite: false,
-        blending: _three.AdditiveBlending,
-        map: particlesTexture,
-        alphaMap: particlesTexture,
-        transparent: true,
-        vertexColors: true
+}
+// 创建投射光线对象
+const raycaster = new _three.Raycaster();
+// 鼠标的位置对象
+const mouse = new _three.Vector2();
+// 监听鼠标的位置
+// window.addEventListener("mousemove", (event) => {
+//   //   console.log(event);
+//   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+//   mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
+//   raycaster.setFromCamera(mouse, camera);
+//   let result = raycaster.intersectObjects(cubeArr);
+//   //   console.log(result);
+//   //   result[0].object.material = redMaterial;
+//   result.forEach((item) => {
+//     item.object.material = redMaterial;
+//   });
+// });
+// 监听鼠标的位置
+window.addEventListener("click", (event)=>{
+    //   console.log(event);
+    mouse.x = event.clientX / window.innerWidth * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight * 2 - 1);
+    raycaster.setFromCamera(mouse, camera);
+    let result = raycaster.intersectObjects(cubeArr);
+    //   console.log(result);
+    //   result[0].object.material = redMaterial;
+    result.forEach((item)=>{
+        item.object.material = redMaterial;
     });
-    points = new _three.Points(geometry, material);
-    scene.add(points);
-};
-generateGalaxy();
+});
 // 初始化渲染器
 const renderer = new _three.WebGLRenderer();
 // 设置渲染的尺寸大小
@@ -629,8 +615,8 @@ const controls = new (0, _orbitControls.OrbitControls)(camera, renderer.domEleme
 // 设置控制器阻尼，让控制器更有真实效果,必须在动画循环里调用.update()。
 controls.enableDamping = true;
 // 添加坐标轴辅助器
-// const axesHelper = new THREE.AxesHelper(5);
-// scene.add(axesHelper);
+const axesHelper = new _three.AxesHelper(5);
+scene.add(axesHelper);
 // 设置时钟
 const clock = new _three.Clock();
 window.addEventListener("dblclick", ()=>{
