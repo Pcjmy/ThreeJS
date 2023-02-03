@@ -5,6 +5,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
 // 导入dat.gui
 import * as dat from 'dat.gui'
+// 导入cannon引擎
+import * as CANNON from 'cannon-es'
 
 const gui = new dat.GUI()
 
@@ -19,74 +21,62 @@ const camera = new THREE.PerspectiveCamera(
   30
 )
 
-const textureLoader = new THREE.TextureLoader()
-const particlesTexture = textureLoader.load('./particles/1.png')
 // 设置相机位置
 camera.position.set(0, 0, 20)
 scene.add(camera)
 
-const cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({
-  wireframe: true,
+// 创建球和平面
+const sphereGeometry = new THREE.SphereGeometry(1,20,20);
+const sphereMaterial = new THREE.MeshStandardMaterial();
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+sphere.castShadow = true;
+scene.add(sphere);
+
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.MeshStandardMaterial()
+);
+
+floor.position.set(0, -5, 0);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// 创建物理世界
+const world = new CANNON.World();
+world.gravity.set(0, -9.8, 0);
+// 创建物理小球形状
+const sphereShape = new CANNON.Sphere(1);
+
+// 设置物体材质
+const sphereWorldMaterial = new CANNON.Material();
+
+// 创建物理世界的物体
+const sphereBody = new CANNON.Body({
+  shape: sphereShape,
+  position: new CANNON.Vec3(0, 0, 0),
+  // 小球质量
+  mass: 1,
+  // 物体材质
+  material: sphereWorldMaterial
 });
-const redMaterial = new THREE.MeshBasicMaterial({
-  color: "#ff0000",
-});
 
-// 1000立方体
-let cubeArr = [];
-for (let i = -5; i < 5; i++) {
-  for (let j = -5; j < 5; j++) {
-    for (let z = -5; z < 5; z++) {
-      const cube = new THREE.Mesh(cubeGeometry, material);
-      cube.position.set(i, j, z);
-      scene.add(cube);
-      cubeArr.push(cube);
-    }
-  }
-}
+// 将物体添加至物理世界
+world.addBody(sphereBody);
 
-// 创建投射光线对象
-const raycaster = new THREE.Raycaster();
-
-// 鼠标的位置对象
-const mouse = new THREE.Vector2();
-
-// 监听鼠标的位置
-// window.addEventListener("mousemove", (event) => {
-//   //   console.log(event);
-//   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-//   mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
-//   raycaster.setFromCamera(mouse, camera);
-//   let result = raycaster.intersectObjects(cubeArr);
-//   //   console.log(result);
-//   //   result[0].object.material = redMaterial;
-//   result.forEach((item) => {
-//     item.object.material = redMaterial;
-//   });
-// });
-
-// 监听鼠标的位置
-window.addEventListener("click", (event) => {
-  //   console.log(event);
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -((event.clientY / window.innerHeight) * 2 - 1);
-  raycaster.setFromCamera(mouse, camera);
-  let result = raycaster.intersectObjects(cubeArr);
-  //   console.log(result);
-  //   result[0].object.material = redMaterial;
-  result.forEach((item) => {
-    item.object.material = redMaterial;
-  });
-});
+// 添加环境光和平行光
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+dirLight.castShadow = true;
+scene.add(dirLight);
 
 // 初始化渲染器
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({alpha: true});
 // 设置渲染的尺寸大小
 renderer.setSize(window.innerWidth, window.innerHeight);
 // 开启场景中的阴影贴图
 renderer.shadowMap.enabled = true;
-renderer.physicallyCorrectLights = true;
 
 // console.log(renderer);
 // 将webgl渲染的canvas内容添加到body
@@ -119,10 +109,13 @@ window.addEventListener('dblclick', () => {
 })
 
 function render() {
-  let time = clock.getElapsedTime()
+  let deltaTime = clock.getDelta()
   controls.update()
+  // 更新物理引擎里世界的物体
+  world.step(1/120, deltaTime)
+  sphere.position.copy(sphereBody.position)
   renderer.render(scene, camera)
-  //   渲染下一帧的时候就会调用render函数
+  //  渲染下一帧的时候就会调用render函数
   requestAnimationFrame(render)
 }
 

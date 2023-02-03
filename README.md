@@ -18,6 +18,7 @@ npm install --save-dev parcel
 npm install three --save
 npm install gsap
 npm install --save dat.gui
+npm install --save cannon-es
 ```
 
 运行
