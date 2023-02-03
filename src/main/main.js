@@ -64,6 +64,18 @@ const sphereBody = new CANNON.Body({
 // 将物体添加至物理世界
 world.addBody(sphereBody);
 
+// 物理世界创建地面
+const floorShape = new CANNON.Plane();
+const floorBody = new CANNON.Body();
+// 当质量为0时，可以使得物体保持不动
+floorBody.mass = 0;
+floorBody.addShape(floorShape);
+// 地面位置
+floorBody.position.set(0, -5, 0);
+// 旋转地面的位置
+floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+world.addBody(floorBody);
+
 // 添加环境光和平行光
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
@@ -92,7 +104,7 @@ controls.enableDamping = true;
 
 // 添加坐标轴辅助器
 const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// scene.add(axesHelper);
 // 设置时钟
 const clock = new THREE.Clock();
 
