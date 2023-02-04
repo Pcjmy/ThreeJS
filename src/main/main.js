@@ -49,7 +49,7 @@ world.gravity.set(0, -9.8, 0);
 const sphereShape = new CANNON.Sphere(1);
 
 // 设置物体材质
-const sphereWorldMaterial = new CANNON.Material();
+const sphereWorldMaterial = new CANNON.Material('default');
 
 // 创建物理世界的物体
 const sphereBody = new CANNON.Body({
@@ -65,14 +65,15 @@ const sphereBody = new CANNON.Body({
 world.addBody(sphereBody);
 
 // 创建击打声音
-const hitSound = new Audio('assets/metalHit.mp3')
+const hitSound = new Audio('public/assets/metalHit.mp3')
 // 添加监听碰撞事件
 function HitEvent(e) {
   // 获取碰撞的强度
   // console.log('hit', e);
   const impactStrength = e.contact.getImpactVelocityAlongNormal();
   // console.log(impactStrength);
-  if (impactStrength > 5) {
+  if (impactStrength > 2) {
+    hitSound.currentTime = 0;
     hitSound.play();
   }
 }
@@ -81,6 +82,8 @@ sphereBody.addEventListener('collide', HitEvent)
 // 物理世界创建地面
 const floorShape = new CANNON.Plane();
 const floorBody = new CANNON.Body();
+const floorMaterial = new CANNON.Material("floor");
+floorBody.material = floorMaterial;
 // 当质量为0时，可以使得物体保持不动
 floorBody.mass = 0;
 floorBody.addShape(floorShape);
@@ -89,6 +92,21 @@ floorBody.position.set(0, -5, 0);
 // 旋转地面的位置
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
 world.addBody(floorBody);
+
+// 设置2种材质碰撞的参数
+const defaultContactMaterial = new CANNON.ContactMaterial(
+  sphereMaterial,
+  floorMaterial,
+  {
+    // 摩擦力
+    friction: 0.1,
+    // 弹性
+    restitution: 0.7,
+  }
+);
+
+// 讲材料的关联设置添加的物理世界
+world.addContactMaterial(defaultContactMaterial);
 
 // 添加环境光和平行光
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
