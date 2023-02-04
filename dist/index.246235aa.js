@@ -580,6 +580,17 @@ const sphereBody = new _cannonEs.Body({
 });
 // 将物体添加至物理世界
 world.addBody(sphereBody);
+// 创建击打声音
+const hitSound = new Audio("assets/metalHit.mp3");
+// 添加监听碰撞事件
+function HitEvent(e) {
+    // 获取碰撞的强度
+    // console.log('hit', e);
+    const impactStrength = e.contact.getImpactVelocityAlongNormal();
+    // console.log(impactStrength);
+    if (impactStrength > 5) hitSound.play();
+}
+sphereBody.addEventListener("collide", HitEvent);
 // 物理世界创建地面
 const floorShape = new _cannonEs.Plane();
 const floorBody = new _cannonEs.Body();
