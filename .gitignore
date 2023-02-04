@@ -2,6 +2,10 @@
 node_modules
 .dist
 .parcel-cache
+dist/*.js
+dist/*.css
+dist/*.html
+dist/*.map
 
 # local env files
 .env.local
