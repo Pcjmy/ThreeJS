@@ -27,7 +27,7 @@ npm install --save cannon-es
 npm run dev
 ```
 
-### three.js
+### 文档
 
 官网
 
