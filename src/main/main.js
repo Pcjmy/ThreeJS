@@ -44,7 +44,12 @@ const params = {
 const rawShaderMaterial = new THREE.RawShaderMaterial({
   vertexShader: basicVertexShader,
   fragmentShader: basicFragmentShader,
-  side: THREE.DoubleSide
+  side: THREE.DoubleSide,
+  uniforms: {
+    uTime: {
+      value: 0
+    }
+  }
 })
 
 // 创建平面
@@ -68,6 +73,8 @@ controls.enableDamping = true
 // 设置时钟
 const clock = new THREE.Clock()
 function animate(t) {
+  const elapsedTime = clock.getElapsedTime()
+  rawShaderMaterial.uniforms.uTime.value = elapsedTime / 3.0
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
 }
