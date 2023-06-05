@@ -48,6 +48,9 @@ const rawShaderMaterial = new THREE.RawShaderMaterial({
   uniforms: {
     uTime: {
       value: 0
+    },
+    uTexture: {
+      value: texture
     }
   }
 })
