@@ -43,7 +43,8 @@ const params = {
 // 创建着色器材质
 const rawShaderMaterial = new THREE.RawShaderMaterial({
   vertexShader: basicVertexShader,
-  fragmentShader: basicFragmentShader
+  fragmentShader: basicFragmentShader,
+  side: THREE.DoubleSide
 })
 
 // 创建平面
