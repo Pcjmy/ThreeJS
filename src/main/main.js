@@ -5,9 +5,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as dat from 'dat.gui'
 
 // 顶点着色器
-import basicVertexShader from '../shader/basic/vertex.glsl'
+import basicVertexShader from '../shader/raw/vertex.glsl'
 // 片元着色器
-import basicFragmentShader from '../shader/basic/fragment.glsl'
+import basicFragmentShader from '../shader/raw/fragment.glsl'
 
 const gui = new dat.GUI()
 
@@ -41,7 +41,7 @@ const params = {
 }
 
 // 创建着色器材质
-const shaderMaterial = new THREE.ShaderMaterial({
+const rawShaderMaterial = new THREE.RawShaderMaterial({
   vertexShader: basicVertexShader,
   fragmentShader: basicFragmentShader
 })
@@ -49,7 +49,7 @@ const shaderMaterial = new THREE.ShaderMaterial({
 // 创建平面
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(1, 1, 64, 64),
-  shaderMaterial
+  rawShaderMaterial
 )
 
 scene.add(floor)
