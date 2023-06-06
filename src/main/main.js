@@ -37,6 +37,7 @@ const shaderMaterial = new THREE.ShaderMaterial({
   vertexShader: deepVertexShader,
   fragmentShader: deepFragmentShader,
   side: THREE.DoubleSide,
+  transparent: true
 })
 
 // 创建平面
