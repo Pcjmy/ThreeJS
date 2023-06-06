@@ -37,6 +37,11 @@ const shaderMaterial = new THREE.ShaderMaterial({
   vertexShader: deepVertexShader,
   fragmentShader: deepFragmentShader,
   side: THREE.DoubleSide,
+  uniforms: {
+    uTime: {
+      value: 0
+    }
+  },
   transparent: true
 })
 
@@ -61,6 +66,8 @@ controls.enableDamping = true
 // 设置时钟
 const clock = new THREE.Clock()
 function animate(t) {
+  const elapsedTime = clock.getElapsedTime()
+  shaderMaterial.uniforms.uTime.value = elapsedTime
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
 }
