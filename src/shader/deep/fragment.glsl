@@ -2,6 +2,6 @@ precision highp float;
 varying vec2 vUv;
 
 void main() {
-  float strength = vUv.x;
+  float strength = mod(vUv.y * 5.0, 1.0);
   gl_FragColor = vec4(strength, strength, strength, 1.0);
 }
