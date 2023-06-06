@@ -5,9 +5,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as dat from 'dat.gui'
 
 // 顶点着色器
-import basicVertexShader from '../shader/raw/vertex.glsl'
+import deepVertexShader from '../shader/deep/vertex.glsl'
 // 片元着色器
-import basicFragmentShader from '../shader/raw/fragment.glsl'
+import deepFragmentShader from '../shader/deep/fragment.glsl'
 
 const gui = new dat.GUI()
 
@@ -32,33 +32,17 @@ scene.add(camera)
 const axesHelper = new THREE.AxesHelper(5)
 scene.add(axesHelper)
 
-// 创建纹理加载器对象
-const textureLoader = new THREE.TextureLoader()
-const texture = textureLoader.load('./public/ca.jpeg')
-const params = {
-  uFrequency: 10,
-  uScale: 0.1
-}
-
 // 创建着色器材质
-const rawShaderMaterial = new THREE.RawShaderMaterial({
-  vertexShader: basicVertexShader,
-  fragmentShader: basicFragmentShader,
+const shaderMaterial = new THREE.ShaderMaterial({
+  vertexShader: deepVertexShader,
+  fragmentShader: deepFragmentShader,
   side: THREE.DoubleSide,
-  uniforms: {
-    uTime: {
-      value: 0
-    },
-    uTexture: {
-      value: texture
-    }
-  }
 })
 
 // 创建平面
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(1, 1, 64, 64),
-  rawShaderMaterial
+  shaderMaterial
 )
 
 scene.add(floor)
@@ -76,8 +60,6 @@ controls.enableDamping = true
 // 设置时钟
 const clock = new THREE.Clock()
 function animate(t) {
-  const elapsedTime = clock.getElapsedTime()
-  rawShaderMaterial.uniforms.uTime.value = elapsedTime / 3.0
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
 }
