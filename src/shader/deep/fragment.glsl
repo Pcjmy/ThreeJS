@@ -7,6 +7,7 @@ float random (vec2 st) {
 }
 
 void main() {
-  float strength = random(vUv);
+  float strength = ceil(vUv.x * 10.0) / 10.0 * ceil(vUv.y * 10.0) / 10.0;
+  strength = random(vec2(strength, strength));
   gl_FragColor = vec4(strength, strength, strength, 1.0);
 }
