@@ -40,3 +40,9 @@ https://threejs.org
 GSAP动画库
 
 [GSAP](https://greensock.com/)
+
+
+### 版本
+
+node v18.16.0
+npm 9.5.1
