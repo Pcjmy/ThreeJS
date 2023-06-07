@@ -18,8 +18,7 @@ vec2 rotate(vec2 uv, float rotation, vec2 mid)
 }
 
 void main() {
-  vec2 rotateUv = rotate(vUv, -mod(uTime, 3.14), vec2(0.5, 0.5));
-  float strength = 0.15 / distance(vec2(rotateUv.x, (rotateUv.y - 0.5) * 5.0 + 0.5), vec2(0.5, 0.5)) - 1.0;
-  strength += 0.15 / distance(vec2((rotateUv.x - 0.5) * 5.0 + 0.5, rotateUv.y), vec2(0.5, 0.5)) - 1.0;
+  float strength = step(0.5, distance(vUv, vec2(0.5, 0.5)) + 0.35);
+  strength *= (1.0 - step(0.5, distance(vUv, vec2(0.5, 0.5)) + 0.25));
   gl_FragColor = vec4(strength, strength, strength, 1.0);
 }
