@@ -2,6 +2,8 @@ precision highp float;
 uniform float uTime;
 varying vec2 vUv;
 
+#define PI 3.1415926535
+
 // 随机函数
 float random (vec2 st)
 {
@@ -18,7 +20,7 @@ vec2 rotate(vec2 uv, float rotation, vec2 mid)
 }
 
 void main() {
-  float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / 6.28;
-  float strength = mod(angle * 10.0, 1.0);
+  float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0);
+  float strength = sin(angle * 100.0);
   gl_FragColor = vec4(strength, strength, strength, 1.0);
 }
