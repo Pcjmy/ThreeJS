@@ -41,6 +41,6 @@ float noise (in vec2 st) {
 }
 
 void main() {
-  float strength = noise(vUv);
+  float strength = step(0.5, noise(vUv * 100.0));
   gl_FragColor = vec4(strength, strength, strength, 1.0);
 }
