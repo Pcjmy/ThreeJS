@@ -41,6 +41,13 @@ GSAP动画库
 
 [GSAP](https://greensock.com/)
 
+The Book of Shaders
+
+https://thebookofshaders.com/
+
+SpriteJS
+
+http://spritejs.com
 
 ### 版本
 
