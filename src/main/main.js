@@ -81,12 +81,12 @@ document.body.appendChild(renderer.domElement)
 // 初始化控制器
 const controls = new OrbitControls(camera, renderer.domElement)
 // 设置控制器阻尼
-controls.enableDamping = true
+// controls.enableDamping = true
 // 设置自动旋转
-controls.autoRotate = true
-controls.autoRotateSpeed = 0.1
-controls.maxPolarAngle = (Math.PI / 3) * 2
-controls.minPolarAngle = (Math.PI / 3) * 2
+// controls.autoRotate = true
+// controls.autoRotateSpeed = 0.1
+// controls.maxPolarAngle = (Math.PI / 3) * 2
+// controls.minPolarAngle = (Math.PI / 3) * 2
 
 // 设置时钟
 const clock = new THREE.Clock()
