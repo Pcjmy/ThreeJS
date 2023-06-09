@@ -2,7 +2,6 @@ import * as THREE from 'three'
 // 导入轨道控制器
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 // 导入dat.gui
 import * as dat from 'dat.gui'
 import gsap from 'gsap'
@@ -31,68 +30,44 @@ camera.aspect = window.innerWidth / window.innerHeight
 camera.updateProjectionMatrix()
 scene.add(camera)
 
-// 创建纹理加载器对象
-const rgbeLoader = new RGBELoader()
-rgbeLoader.loadAsync('./public/assets/2k.hdr').then((texture) => {
-  texture.mapping = THREE.EquirectangularReflectionMapping
-  scene.background = texture
-  scene.environment = texture
-})
-
 // 添加坐标轴辅助器
-// const axesHelper = new THREE.AxesHelper(5)
-// scene.add(axesHelper)
+const axesHelper = new THREE.AxesHelper(5)
+scene.add(axesHelper)
+
+const params = {
+  uWaresFrequency: 20,
+  uScale: 0.1
+}
 
 // 创建着色器材质
 const shaderMaterial = new THREE.ShaderMaterial({
   vertexShader: vertexShader,
   fragmentShader: fragmentShader,
   side: THREE.DoubleSide,
-  // transparent: true
+  uniforms: {
+    uWaresFrequency: {
+      value: params.uWaresFrequency
+    },
+    uScale: {
+      value: params.uScale
+    }
+  },
+  transparent: true
 })
 
-// 创建平面
-// const floor = new THREE.Mesh(
-//   new THREE.PlaneGeometry(1, 1, 64, 64),
-//   shaderMaterial
-// )
+gui.add(params, 'uWaresFrequency').min(1).max(100).step(0.1).onChange((value) => {
+  shaderMaterial.uniforms.uWaresFrequency.value = value
+})
 
-// scene.add(floor)
+const plane = new THREE.Mesh(
+  new THREE.PlaneGeometry(1, 1, 512, 512),
+  shaderMaterial
+)
+plane.rotation.x = -Math.PI / 2
+scene.add(plane)
 
 // 初始化渲染器
-const renderer = new THREE.WebGLRenderer({ alpha: true })
-renderer.outputEncoding = THREE.sRGBEncoding
-renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 0.2
-
-const gltfLoader = new GLTFLoader()
-let LightBox = null
-gltfLoader.load('./public/assets/model/flyLight.glb', (gltf) => {
-  // scene.add(gltf.scene)
-  LightBox = gltf.scene.children[1]
-  LightBox.material = shaderMaterial
-
-  for(let i = 0; i < 150 ; i++) {
-    let flyLight = gltf.scene.clone(true)
-    let x = (Math.random() - 0.5) * 300
-    let z = (Math.random() - 0.5) * 300
-    let y = Math.random() * 60 + 25
-    flyLight.position.set(x, y, z)
-    gsap.to(flyLight.rotation, {
-      y: 2 * Math.PI,
-      duration: 10 + Math.random() * 10,
-      repeat: -1
-    })
-    gsap.to(flyLight.position, {
-      x: '+=' + Math.random() * 5,
-      y: '+=' + Math.random() * 20,
-      yoyo: true,
-      duration: 5 + Math.random() * 10,
-      repeat: -1
-    })
-    scene.add(flyLight)
-  }
-})
+const renderer = new THREE.WebGLRenderer()
 
 // 设置渲染尺寸大小
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -101,13 +76,6 @@ document.body.appendChild(renderer.domElement)
 
 // 初始化控制器
 const controls = new OrbitControls(camera, renderer.domElement)
-// 设置控制器阻尼
-controls.enableDamping = true
-// 设置自动旋转
-controls.autoRotate = true
-controls.autoRotateSpeed = 0.1
-controls.maxPolarAngle = (Math.PI / 3) * 2
-controls.minPolarAngle = (Math.PI / 3) * 2
 
 // 设置时钟
 const clock = new THREE.Clock()
