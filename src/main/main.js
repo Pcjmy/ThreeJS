@@ -35,11 +35,11 @@ const axesHelper = new THREE.AxesHelper(5)
 scene.add(axesHelper)
 
 const params = {
-  uWaresFrequency: 20,
-  uScale: 0.1,
-  uXzScale: 5,
+  uWaresFrequency: 14,
+  uScale: 0.03,
+  uXzScale: 1.5,
   uNoiseFrequency: 10,
-  uNoiseScale: 0.1
+  uNoiseScale: 1.5,
 }
 
 // 创建着色器材质
@@ -62,6 +62,9 @@ const shaderMaterial = new THREE.ShaderMaterial({
     },
     uNoiseScale: {
       value: params.uNoiseScale
+    },
+    uTime: {
+      value: params.uTime
     }
   },
   transparent: true
@@ -83,7 +86,7 @@ gui.add(params, 'uNoiseFrequency').min(0).max(100).step(0.1).onChange((value) =>
   shaderMaterial.uniforms.uNoiseFrequency.value = value
 })
 
-gui.add(params, 'uNoiseScale').min(0).max(1).step(0.01).onChange((value) => {
+gui.add(params, 'uNoiseScale').min(0).max(5).step(0.01).onChange((value) => {
   shaderMaterial.uniforms.uNoiseScale.value = value
 })
 
@@ -109,6 +112,8 @@ const controls = new OrbitControls(camera, renderer.domElement)
 const clock = new THREE.Clock()
 function animate(t) {
   controls.update()
+  const elapsedTime = clock.getElapsedTime()
+  shaderMaterial.uniforms.uTime.value = elapsedTime
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
 }
