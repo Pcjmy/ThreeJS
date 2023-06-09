@@ -68,9 +68,30 @@ renderer.toneMappingExposure = 0.2
 const gltfLoader = new GLTFLoader()
 let LightBox = null
 gltfLoader.load('./public/assets/model/flyLight.glb', (gltf) => {
-  scene.add(gltf.scene)
+  // scene.add(gltf.scene)
   LightBox = gltf.scene.children[1]
   LightBox.material = shaderMaterial
+
+  for(let i = 0; i < 150 ; i++) {
+    let flyLight = gltf.scene.clone(true)
+    let x = (Math.random() - 0.5) * 300
+    let z = (Math.random() - 0.5) * 300
+    let y = Math.random() * 60 + 25
+    flyLight.position.set(x, y, z)
+    gsap.to(flyLight.rotation, {
+      y: 2 * Math.PI,
+      duration: 10 + Math.random() * 10,
+      repeat: -1
+    })
+    gsap.to(flyLight.position, {
+      x: '+=' + Math.random() * 5,
+      y: '+=' + Math.random() * 20,
+      yoyo: true,
+      duration: 5 + Math.random() * 10,
+      repeat: -1
+    })
+    scene.add(flyLight)
+  }
 })
 
 // 设置渲染尺寸大小
