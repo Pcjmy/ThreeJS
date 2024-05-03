@@ -6,6 +6,8 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import * as dat from 'dat.gui'
 import gsap from 'gsap'
 import { Water } from 'three/examples/jsm/objects/Water2'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 const gui = new dat.GUI()
 
@@ -40,6 +42,14 @@ const water = new Water(new THREE.PlaneGeometry(1, 1, 1024, 1024), {
 water.rotation.x = -Math.PI / 2
 
 scene.add(water)
+
+// 加载场景背景
+const rgbeLoader = new RGBELoader();
+rgbeLoader.loadAsync("./assets/050.hdr").then((texture) => {
+  texture.mapping = THREE.EquirectangularReflectionMapping
+  scene.background = texture
+  scene.environment = texture
+})
 
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer()
