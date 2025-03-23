@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
-import { Water } from 'three/examples/jsm/objects/Water2'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import vertexShader from '../shader/basic/vertexShader.glsl'
+import fragmentShader from '../shader/basic/fragmentShader.glsl'
 
 // 创建场景
 const scene = new THREE.Scene()
@@ -24,24 +24,28 @@ scene.add(camera)
 const axesHelper = new THREE.AxesHelper(5)
 scene.add(axesHelper)
 
-const water = new Water(new THREE.PlaneGeometry(1, 1, 1024, 1024), {
-  color: '#ffffff',
-  scale: 1,
-  flowDirection: new THREE.Vector2(1, 1),
-  textureHeight: 1024,
-  textureWidth: 1024
-})
-water.rotation.x = -Math.PI / 2
+const geometry = new THREE.BufferGeometry()
+const positions = new Float32Array([0, 0, 0])
 
-scene.add(water)
+geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
 
-// 加载场景背景
-const rgbeLoader = new RGBELoader();
-rgbeLoader.loadAsync("./assets/050.hdr").then((texture) => {
-  texture.mapping = THREE.EquirectangularReflectionMapping
-  scene.background = texture
-  scene.environment = texture
+// 点材质
+// const material = new THREE.PointsMaterial({
+//   color: 0xff0000,
+//   size: 1,
+//   sizeAttenuation: true
+// })
+
+// 点着色器材质
+const material = new THREE.ShaderMaterial({
+  vertexShader,
+  fragmentShader,
 })
+
+// 生成点
+const points = new THREE.Points(geometry, material);
+
+scene.add(points);
 
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer()
@@ -50,6 +54,8 @@ const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 // 将渲染器添加到body
 document.body.appendChild(renderer.domElement)
+
+const controls = new OrbitControls(camera, renderer.domElement)
 
 function animate() {
   requestAnimationFrame(animate)

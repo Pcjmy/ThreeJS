@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { Water } from 'three/examples/jsm/objects/Water2'
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 
 // 创建场景
 const scene = new THREE.Scene()
