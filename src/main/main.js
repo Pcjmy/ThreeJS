@@ -40,6 +40,7 @@ geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
 const material = new THREE.ShaderMaterial({
   vertexShader,
   fragmentShader,
+  transparent: true
 })
 
 // 生成点
