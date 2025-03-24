@@ -6,6 +6,6 @@ void main() {
   gl_Position = projectionMatrix * viewPosition;
 
   // 设置点的大小
-  gl_PointSize = 80.0;
+  gl_PointSize = 100.0;
   vUv = uv;
 }

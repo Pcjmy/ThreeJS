@@ -36,8 +36,17 @@ geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
 //   sizeAttenuation: true
 // })
 
+// 导入纹理
+const textureLoader = new THREE.TextureLoader()
+const texture = textureLoader.load('public/particles/10.png')
+
 // 点着色器材质
 const material = new THREE.ShaderMaterial({
+  uniforms: {
+    uTexture: {
+      value: texture
+    }
+  },
   vertexShader,
   fragmentShader,
   transparent: true
