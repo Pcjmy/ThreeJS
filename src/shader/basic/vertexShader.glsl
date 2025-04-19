@@ -1,5 +1,8 @@
 varying vec2 vUv;
 
+attribute float imgIndex;
+varying float vImgIndex;
+
 void main() {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
   vec4 viewPosition = viewMatrix * modelPosition;
@@ -8,4 +11,5 @@ void main() {
   // 设置点的大小
   gl_PointSize = 100.0;
   vUv = uv;
+  vImgIndex = imgIndex;
 }
