@@ -5,6 +5,7 @@ uniform sampler2D uTexture1;
 uniform sampler2D uTexture2;
 
 varying float vImgIndex;
+varying vec3 vColor;
 
 void main() {
   // gl_FragColor = vec4(gl_PointCoord, 0.0, 1.0);
@@ -32,5 +33,5 @@ void main() {
   } else {
     textureColor = texture2D(uTexture2, gl_PointCoord); 
   }
-  gl_FragColor = vec4(gl_PointCoord, 1.0, textureColor.r);
+  gl_FragColor = vec4(vColor, textureColor.r);
 }

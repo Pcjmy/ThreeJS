@@ -3,7 +3,9 @@ varying vec2 vUv;
 attribute float imgIndex;
 attribute float aScale;
 varying float vImgIndex;
+
 uniform float uTime;
+varying vec3 vColor;
 
 void main() {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
@@ -30,4 +32,6 @@ void main() {
   gl_PointSize = 200.0 * aScale / -viewPosition.z;
   vUv = uv;
   vImgIndex = imgIndex;
+
+  vColor = color;
 }

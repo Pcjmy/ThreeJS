@@ -40,8 +40,8 @@ const params = {
   radius: 5,
   branches: 4,
   spin: 0.5,
-  color: "#ff6030",
-  outColor: "#1b3984",
+  color: '#ff6030',
+  outColor: '#1b3984',
 };
 
 // GalaxyColor
@@ -131,6 +131,9 @@ const generateGalaxy = () => {
       uTexture2: {
         value: texture2
       },
+      uColor: {
+        value: galaxyColor
+      }
     },
   });
 
