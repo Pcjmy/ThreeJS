@@ -152,7 +152,11 @@ document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
 
+const clock = new THREE.Clock();
+
 function animate() {
+  const elapsedTime = clock.getElapsedTime();
+  material.uniforms.uTime.value = elapsedTime;
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
 }
