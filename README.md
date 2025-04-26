@@ -21,25 +21,15 @@ npm run dev
 
 ### 文档
 
-官网
+官网：https://threejs.org
 
-https://threejs.org
+打包工具：[parcel](https://v2.parceljs.cn)
 
-打包工具
+GSAP动画库：[GSAP](https://greensock.com)
 
-[parcel](https://v2.parceljs.cn/)
+The Book of Shaders：https://thebookofshaders.com
 
-GSAP动画库
-
-[GSAP](https://greensock.com/)
-
-The Book of Shaders
-
-https://thebookofshaders.com/
-
-SpriteJS
-
-http://spritejs.com
+SpriteJS：http://spritejs.com
 
 ### 版本
 
