@@ -33,6 +33,7 @@ SpriteJS：http://spritejs.com
 
 ### 版本
 
+```shell
 node v18.16.0
-
 npm 9.5.1
+```

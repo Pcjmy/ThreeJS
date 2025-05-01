@@ -1,7 +1,19 @@
 import * as THREE from 'three'
+// 导入轨道控制器
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import vertexShader from '../shader/basic/vertexShader.glsl'
-import fragmentShader from '../shader/basic/fragmentShader.glsl'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+// 导入dat.gui
+import * as dat from 'dat.gui'
+import gsap from 'gsap'
+import FireWorks from './firework'
+
+// 顶点着色器
+import vertexShader from '../shader/flylight/vertex.glsl'
+// 片元着色器
+import fragmentShader from '../shader/flylight/fragment.glsl'
+
+const gui = new dat.GUI()
 
 // 创建场景
 const scene = new THREE.Scene()
@@ -20,146 +32,88 @@ camera.aspect = window.innerWidth / window.innerHeight
 camera.updateProjectionMatrix()
 scene.add(camera)
 
+// 创建纹理加载器对象
+const rgbeLoader = new RGBELoader()
+rgbeLoader.loadAsync('./public/assets/2k.hdr').then((texture) => {
+  texture.mapping = THREE.EquirectangularReflectionMapping
+  scene.background = texture
+  scene.environment = texture
+})
+
 // 添加坐标轴辅助器
 const axesHelper = new THREE.AxesHelper(5)
 scene.add(axesHelper)
 
-// 导入纹理
-const textureLoader = new THREE.TextureLoader()
-const texture = textureLoader.load('public/particles/9.png')
-const texture1 = textureLoader.load('public/particles/10.png')
-const texture2 = textureLoader.load('public/particles/11.png')
+// 创建着色器材质
+const shaderMaterial = new THREE.ShaderMaterial({
+  vertexShader: vertexShader,
+  fragmentShader: fragmentShader,
+  side: THREE.DoubleSide,
+  // transparent: true
+})
 
-let geometry = null;
-let points = null;
+// 创建平面
+// const floor = new THREE.Mesh(
+//   new THREE.PlaneGeometry(1, 1, 64, 64),
+//   shaderMaterial
+// )
 
-// 设置星系的参数
-const params = {
-  count: 1000,
-  size: 0.1,
-  radius: 5,
-  branches: 4,
-  spin: 0.5,
-  color: '#ff6030',
-  outColor: '#1b3984',
-};
-
-// GalaxyColor
-let galaxyColor = new THREE.Color(params.color);
-let outGalaxyColor = new THREE.Color(params.outColor);
-let material;
-
-const generateGalaxy = () => {
-  // 如果已经存在这些顶点，那么先释放内存，再删除顶点数据
-  if (points !== null) {
-    geometry.dispose();
-    material.dispose();
-    scene.remove(points);
-  }
-
-  // 生成顶点几何
-  geometry = new THREE.BufferGeometry();
-
-  // 随机生成位置
-  const positions = new Float32Array(params.count * 3);
-  const colors = new Float32Array(params.count * 3);
-  const scales = new Float32Array(params.count);
-
-  // 图案属性
-  const imgIndex = new Float32Array(params.count)
-
-  // 循环生成点
-  for (let i = 0; i < params.count; i++) {
-    const current = i * 3;
-
-    // 计算分支的角度 = (计算当前的点在第几个分支) * (2 * Math.PI / 多少个分支)
-    const branchAngel = (i % params.branches) * ((2 * Math.PI) / params.branches);
-
-    const radius = Math.random() * params.radius;
-
-    // 随机设置x/y/z偏移值
-    const randomX = Math.pow(Math.random() * 2 - 1, 3) * 0.5 * (params.radius - radius) * 0.3;
-    const randomY = Math.pow(Math.random() * 2 - 1, 3) * 0.5 * (params.radius - radius) * 0.3;
-    const randomZ = Math.pow(Math.random() * 2 - 1, 3) * 0.5 * (params.radius - radius) * 0.3;
-
-    // 设置当前点x值坐标
-    positions[current] = Math.cos(branchAngel) * radius + randomX;
-
-    // 设置当前点y值坐标
-    positions[current + 1] = randomY;
-
-    // 设置当前点z值坐标
-    positions[current + 2] = Math.sin(branchAngel) * radius + randomZ;
-
-    const mixColor = galaxyColor.clone();
-    mixColor.lerp(outGalaxyColor, radius / params.radius);
-
-    // 设置颜色
-    colors[current] = mixColor.r;
-    colors[current + 1] = mixColor.g;
-    colors[current + 2] = mixColor.b;
-
-    // 顶点的大小
-    scales[current] = Math.random();
-
-    // 根据索引值设置不同的图案；
-    imgIndex[current] = i % 3 ;
-  }
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
-  geometry.setAttribute('imgIndex', new THREE.BufferAttribute(imgIndex, 1));
-
-  // 设置点的着色器材质
-  material = new THREE.ShaderMaterial({
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader,
-    transparent: true,
-    vertexColors: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    uniforms: {
-      uTime: {
-        value: 0,
-      },
-      uTexture: {
-        value: texture
-      },
-      uTexture1: {
-        value: texture1
-      },
-      uTexture2: {
-        value: texture2
-      },
-      uColor: {
-        value: galaxyColor
-      }
-    },
-  });
-
-  // 生成点
-  points = new THREE.Points(geometry, material);
-  scene.add(points);
-  console.log(points);
-};
-
-generateGalaxy()
+// scene.add(floor)
 
 // 初始化渲染器
-const renderer = new THREE.WebGLRenderer()
+const renderer = new THREE.WebGLRenderer({ alpha: true })
+renderer.outputEncoding = THREE.sRGBEncoding
+renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.toneMappingExposure = 0.2
+
+const gltfLoader = new GLTFLoader()
+let LightBox = null
+gltfLoader.load('./public/assets/model/flyLight.glb', (gltf) => {
+  // scene.add(gltf.scene)
+  LightBox = gltf.scene.children[1]
+  LightBox.material = shaderMaterial
+
+  for(let i = 0; i < 150 ; i++) {
+    let flyLight = gltf.scene.clone(true)
+    let x = (Math.random() - 0.5) * 300
+    let z = (Math.random() - 0.5) * 300
+    let y = Math.random() * 60 + 25
+    flyLight.position.set(x, y, z)
+    gsap.to(flyLight.rotation, {
+      y: 2 * Math.PI,
+      duration: 10 + Math.random() * 10,
+      repeat: -1
+    })
+    gsap.to(flyLight.position, {
+      x: '+=' + Math.random() * 5,
+      y: '+=' + Math.random() * 20,
+      yoyo: true,
+      duration: 5 + Math.random() * 10,
+      repeat: -1
+    })
+    scene.add(flyLight)
+  }
+})
 
 // 设置渲染尺寸大小
 renderer.setSize(window.innerWidth, window.innerHeight)
 // 将渲染器添加到body
 document.body.appendChild(renderer.domElement)
 
+// 初始化控制器
 const controls = new OrbitControls(camera, renderer.domElement)
+// 设置控制器阻尼
+controls.enableDamping = true
+// 设置自动旋转
+controls.autoRotate = true
+controls.autoRotateSpeed = 0.1
+// controls.maxPolarAngle = (Math.PI / 3) * 2
+// controls.minPolarAngle = (Math.PI / 3) * 2
 
-const clock = new THREE.Clock();
-
-function animate() {
-  const elapsedTime = clock.getElapsedTime();
-  material.uniforms.uTime.value = elapsedTime;
+// 设置时钟
+const clock = new THREE.Clock()
+function animate(t) {
+  controls.update()
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
 }
@@ -177,3 +131,23 @@ window.addEventListener('resize', () => {
   // 设置渲染器的像素比
   renderer.setPixelRatio(window.devicePixelRatio)
 })
+
+// 管理烟花
+let fireworks = []
+
+// 设置创建烟花函数
+let createFireWorks = () => {
+  let color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
+  let position = {
+    x: (Math.random() - 0.5) * 40,
+    z: (Math.random() - 0.5) * 40,
+    y: 7 + Math.random() * 25,
+  }
+
+  // 随机生成颜色和烟花放的位置
+  let firework = new FireWorks(color, position)
+  firework.addScene(scene, camera)
+  fireworks.push(firework)
+};
+
+window.addEventListener('click', createFireWorks)
