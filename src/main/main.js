@@ -110,16 +110,6 @@ controls.autoRotateSpeed = 0.1
 // controls.maxPolarAngle = (Math.PI / 3) * 2
 // controls.minPolarAngle = (Math.PI / 3) * 2
 
-// 设置时钟
-const clock = new THREE.Clock()
-function animate(t) {
-  controls.update()
-  requestAnimationFrame(animate)
-  renderer.render(scene, camera)
-}
-
-animate()
-
 // 监听画面变化，更新渲染画面
 window.addEventListener('resize', () => {
   // 更新摄像头
@@ -140,7 +130,7 @@ let createFireWorks = () => {
   let color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`
   let position = {
     x: (Math.random() - 0.5) * 40,
-    z: (Math.random() - 0.5) * 40,
+    z: -(Math.random() - 0.5) * 40,
     y: 7 + Math.random() * 25,
   }
 
@@ -151,3 +141,18 @@ let createFireWorks = () => {
 };
 
 window.addEventListener('click', createFireWorks)
+
+// 设置时钟
+const clock = new THREE.Clock()
+function animate(t) {
+  controls.update()
+
+  fireworks.forEach((firework) => {
+    firework.update()
+  })
+
+  requestAnimationFrame(animate)
+  renderer.render(scene, camera)
+}
+
+animate()
