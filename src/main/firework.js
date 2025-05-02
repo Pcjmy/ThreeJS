@@ -7,6 +7,7 @@ import fireWorksFragment from '../shader/fireworks/fragment.glsl'
 export default class FireWorks {
   constructor(color, to, from = { x: 0, y: 0, z: 0 }) {
     console.log('创建烟花：', color, to)
+    this.color = new THREE.Color(color)
 
     // 创建烟花
     this.startGeometry = new THREE.BufferGeometry()
@@ -42,9 +43,14 @@ export default class FireWorks {
         },
         uSize: {
           value: 20
+        },
+        uColor: {
+          value: this.color
         }
       }
     })
+
+    console.log('this.startMaterial=', this.startMaterial)
 
     // 创建烟花点球
     this.startPoint = new THREE.Points(this.startGeometry, this.startMaterial)
@@ -99,6 +105,9 @@ export default class FireWorks {
         },
         uSize: {
           value: 0
+        },
+        uColor: {
+          value: this.color
         }
       },
       vertexShader: fireWorksVertex,
@@ -112,6 +121,31 @@ export default class FireWorks {
       this.fireWorksGeometry,
       this.fireWorkMaterial
     )
+
+    // 创建音频
+    this.listener = new THREE.AudioListener()
+    this.sound = new THREE.Audio(this.listener)
+    this.sendSound = new THREE.Audio(this.listener)
+
+    // 创建音频加载器
+    const audioLoader = new THREE.AudioLoader()
+    audioLoader.load(
+      `./assets/audio/pow${Math.floor(Math.random() * 4 + 1)}.ogg`,
+      (buffer) => {
+        this.sound.setBuffer(buffer)
+        this.sound.setLoop(false)
+        this.sound.setVolume(1)
+      },
+    )
+
+    audioLoader.load(
+      `./assets/audio/send.mp3`,
+      (buffer) => {
+        this.sendSound.setBuffer(buffer)
+        this.sendSound.setLoop(false)
+        this.sendSound.setVolume(1)
+      },
+    )
   }
 
   // 添加到场景
@@ -123,15 +157,24 @@ export default class FireWorks {
 
   update() {
     const elapsedTime = this.clock.getElapsedTime()
-    if (elapsedTime < 1) {
+    if (elapsedTime > 0.2 && elapsedTime < 1) {
+      if (!this.sendSound.isPlaying && !this.sendSoundPlay) {
+        this.sendSound.play()
+        this.sendSoundPlay = true
+      }
       this.startMaterial.uniforms.uTime.value = elapsedTime
       this.startMaterial.uniforms.uSize.value = 20
-    } else {
+    } else if (elapsedTime > 1) {
       const time = elapsedTime - 1
       this.startMaterial.uniforms.uSize.value = 0
       this.startPoint.clear()
       this.startGeometry.dispose()
       this.startMaterial.dispose()
+
+      if (!this.sound.isPlaying && !this.play) {
+        this.sound.play()
+        this.play = true
+      }
 
       // 设置烟花显示
       this.fireWorkMaterial.uniforms.uSize.value = 20
@@ -143,7 +186,9 @@ export default class FireWorks {
         this.fireWorks.clear()
         this.fireWorksGeometry.dispose()
         this.fireWorkMaterial.dispose()
+        return true
       }
+      return false
     }
   }
 }

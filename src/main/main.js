@@ -13,6 +13,9 @@ import vertexShader from '../shader/flylight/vertex.glsl'
 // 片元着色器
 import fragmentShader from '../shader/flylight/fragment.glsl'
 
+// 导入水模块
+import { Water } from 'three/examples/jsm/objects/Water2'
+
 const gui = new dat.GUI()
 
 // 创建场景
@@ -27,7 +30,7 @@ const camera = new THREE.PerspectiveCamera(
 )
 
 // 设置相机位置
-camera.position.set(0, 0, 2)
+camera.position.set(0, 0, 50)
 camera.aspect = window.innerWidth / window.innerHeight
 camera.updateProjectionMatrix()
 scene.add(camera)
@@ -41,8 +44,8 @@ rgbeLoader.loadAsync('./public/assets/2k.hdr').then((texture) => {
 })
 
 // 添加坐标轴辅助器
-const axesHelper = new THREE.AxesHelper(5)
-scene.add(axesHelper)
+// const axesHelper = new THREE.AxesHelper(5)
+// scene.add(axesHelper)
 
 // 创建着色器材质
 const shaderMaterial = new THREE.ShaderMaterial({
@@ -67,17 +70,35 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
 renderer.toneMappingExposure = 0.2
 
 const gltfLoader = new GLTFLoader()
+
+gltfLoader.load('./public/assets/model/newyears_min.glb', (gltf) => {
+  scene.add(gltf.scene)
+
+  // 创建水面
+  const waterGeometry = new THREE.PlaneGeometry(50, 50)
+  const water = new Water(waterGeometry, {
+    scale: 4,
+    textureWidth: 1024,
+    textureHeight: 1024, 
+  })
+
+  water.position.y = 1;
+  water.rotation.x = -Math.PI / 2
+
+  scene.add(water)
+})
+
 let LightBox = null
 gltfLoader.load('./public/assets/model/flyLight.glb', (gltf) => {
   // scene.add(gltf.scene)
-  LightBox = gltf.scene.children[1]
+  LightBox = gltf.scene.children[0]
   LightBox.material = shaderMaterial
 
   for(let i = 0; i < 150 ; i++) {
     let flyLight = gltf.scene.clone(true)
     let x = (Math.random() - 0.5) * 300
     let z = (Math.random() - 0.5) * 300
-    let y = Math.random() * 60 + 25
+    let y = Math.random() * 60 + 5
     flyLight.position.set(x, y, z)
     gsap.to(flyLight.rotation, {
       y: 2 * Math.PI,
@@ -147,9 +168,14 @@ const clock = new THREE.Clock()
 function animate(t) {
   controls.update()
 
-  fireworks.forEach((firework) => {
-    firework.update()
-  })
+  // 反向遍历避免索引错乱
+  for (let i = fireworks.length - 1; i >= 0; i--) {
+    const firework = fireworks[i]
+    const shouldRemove = firework.update()
+    if (shouldRemove) {
+      fireworks.splice(i, 1)
+    }
+  }
 
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
