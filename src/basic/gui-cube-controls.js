@@ -18,6 +18,7 @@ document.body.appendChild(renderer.domElement)
 const geometry = new THREE.BoxGeometry(1, 1, 1)
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 const parentMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+parentMaterial.wireframe = true
 
 let parentCube = new THREE.Mesh(geometry, parentMaterial)
 const cube = new THREE.Mesh(geometry, material)
@@ -79,7 +80,20 @@ const eventObj = {
 const gui = new GUI()
 gui.add(eventObj, 'FullScreen').name('全屏')
 gui.add(eventObj, 'ExitFullScreen').name('退出全屏')
-// gui.add(cube.position, 'x', -5, 5).name('立方体x轴位置')
-gui.add(cube.position, 'x').min(-10).max(10).step(1).name('立方体x轴位置')
-gui.add(cube.position, 'y').min(-10).max(10).step(1).name('立方体y轴位置')
-gui.add(cube.position, 'z').min(-10).max(10).step(1).name('立方体z轴位置')
+let folder = gui.addFolder('立方体位置')
+folder.add(cube.position, 'x').min(-10).max(10).step(1).name('立方体x轴位置')
+folder.add(cube.position, 'y').min(-10).max(10).step(1).name('立方体y轴位置')
+folder.add(cube.position, 'z').min(-10).max(10).step(1).name('立方体z轴位置')
+
+gui.add(parentMaterial, 'wireframe').name('父元素线框模式')
+
+let colorParams = {
+	cubeColor: '#ff0000'
+}
+
+gui
+	.addColor(colorParams, 'cubeColor')
+	.name('立方体颜色')
+	.onChange((value) => {
+		material.color.set(value)
+	})
