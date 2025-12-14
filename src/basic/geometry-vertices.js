@@ -12,15 +12,27 @@ const camera = new THREE.PerspectiveCamera(
 
 const geometry = new THREE.BufferGeometry()
 
+// const vertices = new Float32Array([
+// 	-1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0, -1.0, 1.0, 0,
+// 	-1.0, -1.0, 0.0
+// ])
+
+// geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+
 const vertices = new Float32Array([
-	-1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0
+	-1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0, -1.0, 1.0, 0.0
 ])
 
 geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
 
+const indices = new Uint16Array([0, 1, 2, 2, 3, 0])
+
+geometry.setIndex(new THREE.BufferAttribute(indices, 1))
+
 const material = new THREE.MeshBasicMaterial({
 	color: 0x00ff00,
-	side: THREE.DoubleSide
+	side: THREE.DoubleSide,
+	wireframe: true
 })
 const plane = new THREE.Mesh(geometry, material)
 scene.add(plane)
