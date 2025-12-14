@@ -1,39 +1,33 @@
-## README
+# README
 
 Three.js
 
-### 项目搭建
+## 项目设置
 
-```shell
-npm init -y
-npm install --save-dev parcel
-npm install three --save
-npm install gsap
-npm install --save dat.gui
-npm install --save cannon-es
-```
+### 核心依赖
+- **three**: Three.js 3D 库
+- **gsap**: 动画库
+- **dat.gui**: 调试控制面板
+- **cannon-es**: 物理引擎
 
-运行
+### 开发依赖
+- **parcel**: 模块打包工具
+
+### 运行项目
 
 ```shell
 npm run dev
 ```
 
-### 文档
+## 相关文档
 
-官网：https://threejs.org
+- **Three.js 官网**：https://threejs.org
+- **打包工具 Parcel**：[parcel](https://v2.parceljs.cn)
+- **GSAP 动画库**：[GSAP](https://greensock.com)
+- **着色器学习**：The Book of Shaders https://thebookofshaders.com
+- **SpriteJS**：http://spritejs.com
 
-打包工具：[parcel](https://v2.parceljs.cn)
+## 开发环境版本
 
-GSAP动画库：[GSAP](https://greensock.com)
-
-The Book of Shaders：https://thebookofshaders.com
-
-SpriteJS：http://spritejs.com
-
-### 版本
-
-```shell
-node v18.16.0
-npm 9.5.1
-```
+- **Node.js**：v18.16.0
+- **NPM**：9.5.1
