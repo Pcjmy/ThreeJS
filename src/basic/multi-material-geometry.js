@@ -10,41 +10,41 @@ const camera = new THREE.PerspectiveCamera(
 	1000
 )
 
-const geometry = new THREE.BufferGeometry()
+const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
 
-// const vertices = new Float32Array([
-// 	-1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0, -1.0, 1.0, 0,
-// 	-1.0, -1.0, 0.0
-// ])
+const cubeMaterial0 = new THREE.MeshBasicMaterial({
+	color: 0x00ff00
+})
 
-// geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+const cubeMaterial1 = new THREE.MeshBasicMaterial({
+	color: 0xff0000
+})
 
-const vertices = new Float32Array([
-	-1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0, -1.0, 1.0, 0.0
+const cubeMaterial2 = new THREE.MeshBasicMaterial({
+	color: 0xff00ff
+})
+
+const cubeMaterial3 = new THREE.MeshBasicMaterial({
+	color: 0x00ffff
+})
+
+const cubeMaterial4 = new THREE.MeshBasicMaterial({
+	color: 0xffff00
+})
+
+const cubeMaterial5 = new THREE.MeshBasicMaterial({
+	color: 0xffffff
+})
+
+const cube = new THREE.Mesh(cubeGeometry, [
+	cubeMaterial0,
+	cubeMaterial1,
+	cubeMaterial2,
+	cubeMaterial3,
+	cubeMaterial4,
+	cubeMaterial5
 ])
-
-geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
-
-const indices = new Uint16Array([0, 1, 2, 2, 3, 0])
-
-geometry.setIndex(new THREE.BufferAttribute(indices, 1))
-
-geometry.addGroup(0, 3, 0)
-geometry.addGroup(3, 3, 1)
-
-const material = new THREE.MeshBasicMaterial({
-	color: 0x00ff00,
-	side: THREE.DoubleSide,
-	wireframe: true
-})
-
-const material1 = new THREE.MeshBasicMaterial({
-	color: 0xff0000,
-	side: THREE.DoubleSide
-})
-
-const plane = new THREE.Mesh(geometry, [material, material1])
-scene.add(plane)
+scene.add(cube)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
