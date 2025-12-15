@@ -12,11 +12,13 @@ const camera = new THREE.PerspectiveCamera(
 
 let textureLoader = new THREE.TextureLoader()
 let texture = textureLoader.load('./public/door.png')
+let alphaMap = textureLoader.load('./public/door/height.jpg')
 let planeGeometry = new THREE.PlaneGeometry(1, 1)
 let planeMaterial = new THREE.MeshBasicMaterial({
 	color: 0xffffff,
 	map: texture,
-	transparent: true
+	transparent: true,
+	alphaMap: alphaMap
 })
 let plane = new THREE.Mesh(planeGeometry, planeMaterial)
 scene.add(plane)
