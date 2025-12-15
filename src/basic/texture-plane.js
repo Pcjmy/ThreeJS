@@ -10,42 +10,16 @@ const camera = new THREE.PerspectiveCamera(
 	1000
 )
 
-const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
-
-const cubeMaterial0 = new THREE.MeshBasicMaterial({
-	color: 0x00ff00
+let textureLoader = new THREE.TextureLoader()
+let texture = textureLoader.load('./public/door.png')
+let planeGeometry = new THREE.PlaneGeometry(1, 1)
+let planeMaterial = new THREE.MeshBasicMaterial({
+	color: 0xffffff,
+	map: texture,
+	transparent: true
 })
-
-const cubeMaterial1 = new THREE.MeshBasicMaterial({
-	color: 0xff0000
-})
-
-const cubeMaterial2 = new THREE.MeshBasicMaterial({
-	color: 0xff00ff
-})
-
-const cubeMaterial3 = new THREE.MeshBasicMaterial({
-	color: 0x00ffff
-})
-
-const cubeMaterial4 = new THREE.MeshBasicMaterial({
-	color: 0xffff00
-})
-
-const cubeMaterial5 = new THREE.MeshBasicMaterial({
-	color: 0xffffff
-})
-
-const cube = new THREE.Mesh(cubeGeometry, [
-	cubeMaterial0,
-	cubeMaterial1,
-	cubeMaterial2,
-	cubeMaterial3,
-	cubeMaterial4,
-	cubeMaterial5
-])
-
-scene.add(cube)
+let plane = new THREE.Mesh(planeGeometry, planeMaterial)
+scene.add(plane)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
