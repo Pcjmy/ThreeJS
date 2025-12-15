@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 
 const scene = new THREE.Scene()
 
@@ -13,12 +14,20 @@ const camera = new THREE.PerspectiveCamera(
 let textureLoader = new THREE.TextureLoader()
 let texture = textureLoader.load('./public/door.png')
 let alphaMap = textureLoader.load('./public/door/height.jpg')
+let lightMap = textureLoader.load('./public/colors.png')
+let rgbeLoader = new RGBELoader()
+rgbeLoader.load('./assets/050.hdr', (envMap) => {
+	envMap.mapping = THREE.EquirectangularReflectionMapping
+	scene.background = envMap
+	scene.environment = envMap
+})
 let planeGeometry = new THREE.PlaneGeometry(1, 1)
 let planeMaterial = new THREE.MeshBasicMaterial({
 	color: 0xffffff,
 	map: texture,
-	transparent: true,
-	alphaMap: alphaMap
+	transparent: true
+	// alphaMap: alphaMap,
+	// lightMap: lightMap
 })
 let plane = new THREE.Mesh(planeGeometry, planeMaterial)
 scene.add(plane)
