@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 
 const scene = new THREE.Scene()
 
@@ -13,6 +14,7 @@ const camera = new THREE.PerspectiveCamera(
 
 let textureLoader = new THREE.TextureLoader()
 let texture = textureLoader.load('./public/door.png')
+texture.colorSpace = THREE.SRGBColorSpace
 let alphaMap = textureLoader.load('./public/door/height.jpg')
 let lightMap = textureLoader.load('./public/colors.png')
 let rgbeLoader = new RGBELoader()
@@ -68,3 +70,16 @@ window.addEventListener('resize', () => {
 	camera.aspect = window.innerWidth / window.innerHeight
 	camera.updateProjectionMatrix()
 })
+
+const gui = new GUI()
+
+gui
+	.add(texture, 'colorSpace')
+	.options({
+		None: THREE.NoColorSpace,
+		sRGB: THREE.SRGBColorSpace,
+		Linear: THREE.LinearColorSpace
+	})
+	.onChange(() => {
+		texture.needsUpdate = true
+	})
