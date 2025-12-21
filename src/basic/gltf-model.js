@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 
 const scene = new THREE.Scene()
 
@@ -65,6 +66,14 @@ scene.background = new THREE.Color(0x999999)
 
 const gltfLoader = new GLTFLoader()
 gltfLoader.load('./model/duck.glb', (gltf) => {
+	scene.add(gltf.scene)
+})
+
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('./draco/')
+gltfLoader.setDRACOLoader(dracoLoader)
+
+gltfLoader.load('./model/city.glb', (gltf) => {
 	scene.add(gltf.scene)
 })
 
