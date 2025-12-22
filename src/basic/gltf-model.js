@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
@@ -51,17 +50,6 @@ window.addEventListener('resize', () => {
 	camera.updateProjectionMatrix()
 })
 
-const gui = new GUI()
-
-const boxGeometry = new THREE.BoxGeometry(1, 1, 100)
-const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-
-const box = new THREE.Mesh(boxGeometry, boxMaterial)
-// scene.add(box)
-
-// scene.fog = new THREE.Fog(0x999999, 0.1, 50)
-
-scene.fog = new THREE.FogExp2(0x999999, 0.1)
 scene.background = new THREE.Color(0x999999)
 
 const gltfLoader = new GLTFLoader()
