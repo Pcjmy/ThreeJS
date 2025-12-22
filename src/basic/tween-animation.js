@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 import * as TWEEN from 'three/examples/jsm/libs/tween.module.min.js'
 
 const scene = new THREE.Scene()
@@ -49,6 +50,8 @@ window.addEventListener('resize', () => {
 	camera.updateProjectionMatrix()
 })
 
+const gui = new GUI()
+
 const sphere1 = new THREE.Mesh(
 	new THREE.SphereGeometry(1, 32, 32),
 	new THREE.MeshBasicMaterial({ color: 0xff00ff })
@@ -61,8 +64,38 @@ tween.to({ x: 4 }, 1000)
 tween.onUpdate(() => {
 	console.log(sphere1.position)
 })
-tween.repeat(Infinity)
-tween.yoyo(true)
+// tween.repeat(Infinity)
+// tween.yoyo(true)
 // tween.delay(3000)
 tween.easing(TWEEN.Easing.Quadratic.InOut)
+
+const tween2 = new TWEEN.Tween(sphere1.position)
+
+tween2.to({ x: -4 }, 1000)
+tween2.onUpdate(() => {
+	console.log(sphere1.position)
+})
+
+tween.chain(tween2)
+tween2.chain(tween)
 tween.start()
+tween.onStart(() => {
+	console.log('tween start')
+})
+tween.onComplete(() => {
+	console.log('tween complete')
+})
+tween.onStop(() => {
+	console.log('tween stop')
+})
+tween.onUpdate(() => {
+	console.log('tween update')
+})
+
+let params = {
+	stop: function () {
+		tween.stop()
+	}
+}
+
+gui.add(params, 'stop')
