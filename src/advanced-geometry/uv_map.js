@@ -36,6 +36,10 @@ const indices = new Uint16Array([0, 1, 2, 2, 3, 0])
 
 geometry.setIndex(new THREE.BufferAttribute(indices, 1))
 
+const uv = new Float32Array([0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0])
+
+geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
+
 const material = new THREE.MeshBasicMaterial({
 	map: uvTexture
 })
