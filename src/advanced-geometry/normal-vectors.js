@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
+import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js'
 
 const scene = new THREE.Scene()
 
@@ -55,6 +56,9 @@ const material = new THREE.MeshBasicMaterial({
 const plane = new THREE.Mesh(geometry, material)
 scene.add(plane)
 plane.position.x = 3
+
+const helper = new VertexNormalsHelper(plane, 1, 0x00ff00)
+scene.add(helper)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
