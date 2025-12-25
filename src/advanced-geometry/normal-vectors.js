@@ -40,7 +40,14 @@ geometry.setIndex(new THREE.BufferAttribute(indices, 1))
 const uv = new Float32Array([0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0])
 
 geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2))
-geometry.computeVertexNormals()
+
+const normals = new Float32Array([
+	0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0
+])
+
+geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3))
+
+// geometry.computeVertexNormals()
 
 const material = new THREE.MeshBasicMaterial({
 	map: uvTexture
