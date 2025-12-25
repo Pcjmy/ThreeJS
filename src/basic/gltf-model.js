@@ -60,13 +60,13 @@ gltfLoader.load('./model/duck.glb', (gltf) => {
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('./draco/')
 gltfLoader.setDRACOLoader(dracoLoader)
-
 gltfLoader.load('./model/city.glb', (gltf) => {
 	scene.add(gltf.scene)
 })
 
 const rgbeLoader = new RGBELoader()
-rgbeLoader.load('./public/hdr/Alex_Hart-Nature_Lab_Bones_2k.hdr', (texture) => {
+rgbeLoader.load('./assets/050.hdr', (texture) => {
 	texture.mapping = THREE.EquirectangularReflectionMapping
 	scene.environment = texture
+	scene.background = texture
 })
