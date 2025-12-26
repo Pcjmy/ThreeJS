@@ -76,14 +76,18 @@ const box = new THREE.Box3()
 const arrSphere = [sphere1, sphere2, sphere3]
 
 for (let i = 0; i < arrSphere.length; i++) {
-	// 计算每个球体的边界框
-	arrSphere[i].geometry.computeBoundingBox()
-	const box3 = arrSphere[i].geometry.boundingBox
-	// 更新球体的世界矩阵
-	arrSphere[i].updateWorldMatrix(true, true)
-	// 将球体的边界框应用到球体的世界矩阵
-	box3.applyMatrix4(arrSphere[i].matrixWorld)
-	// 合并所有球体的边界框
+	// // 计算每个球体的边界框
+	// arrSphere[i].geometry.computeBoundingBox()
+	// const box3 = arrSphere[i].geometry.boundingBox
+	// // 更新球体的世界矩阵
+	// arrSphere[i].updateWorldMatrix(true, true)
+	// // 将球体的边界框应用到球体的世界矩阵
+	// box3.applyMatrix4(arrSphere[i].matrixWorld)
+	// // 合并所有球体的边界框
+	// box.union(box3)
+
+	// 第二种方式
+	const box3 = new THREE.Box3().setFromObject(arrSphere[i])
 	box.union(box3)
 }
 
