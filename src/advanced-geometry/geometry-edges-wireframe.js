@@ -57,25 +57,31 @@ const gltfLoader = new GLTFLoader()
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('./draco/')
 gltfLoader.setDRACOLoader(dracoLoader)
-gltfLoader.load('./model/building.glb', (gltf) => {
+gltfLoader.load('./model/city.glb', (gltf) => {
 	// scene.add(gltf.scene)
-	let building = gltf.scene.children[0]
-	let geometry = building.geometry
 
-	// let edgesGeometry = new THREE.EdgesGeometry(geometry)
-	let edgesMaterial = new THREE.LineBasicMaterial({ color: 0xffffff })
+	gltf.scene.traverse((child) => {
+		if (child.isMesh) {
+			let building = child
+			let geometry = building.geometry
 
-	let edgesGeometry = new THREE.WireframeGeometry(geometry)
-	let edges = new THREE.LineSegments(edgesGeometry, edgesMaterial)
-	building.updateWorldMatrix(true, true)
-	edges.matrix.copy(building.matrixWorld)
-	edges.matrix.decompose(edges.position, edges.quaternion, edges.scale)
-	scene.add(edges)
+			let edgesGeometry = new THREE.EdgesGeometry(geometry)
+			let edgesMaterial = new THREE.LineBasicMaterial({ color: 0xffffff })
+
+			// let edgesGeometry = new THREE.WireframeGeometry(geometry)
+			let edges = new THREE.LineSegments(edgesGeometry, edgesMaterial)
+			building.updateWorldMatrix(true, true)
+			edges.matrix.copy(building.matrixWorld)
+			edges.matrix.decompose(edges.position, edges.quaternion, edges.scale)
+			scene.add(edges)
+		}
+	})
 })
 
 const rgbeLoader = new RGBELoader()
+
 rgbeLoader.load('./assets/050.hdr', (texture) => {
 	texture.mapping = THREE.EquirectangularReflectionMapping
 	scene.environment = texture
-	scene.background = texture
+	// scene.background = texture
 })
